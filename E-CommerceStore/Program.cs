@@ -1,5 +1,14 @@
+using E_CommerceStore.Database;
+using Microsoft.EntityFrameworkCore;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<EStoreContext>(options =>
+options.UseSqlServer(EStoreContext.MakeConnectionString(
+    Directory.GetCurrentDirectory(), "appDbConfig.json")));
+
 builder.Services.AddControllersWithViews();
+
 
 WebApplication app = builder.Build();
 /*if (!app.Environment.IsDevelopment())
