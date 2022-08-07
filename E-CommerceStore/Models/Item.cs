@@ -25,5 +25,21 @@
         public int? CartId { get; set; }
 
         public Order? Order { get; set; }
+
+        public Item(string Name,decimal Price,int BrandId,int TypeId,int SellerId)
+        {
+            this.Name = Name;
+            this.Price = Price;
+            this.BrandId = BrandId;
+            this.ItemTypeId = TypeId;
+            this.SellerId = SellerId;
+        }
+
+        protected Item() { }
+
+        public bool IsInCart()
+        {
+            return CartId!=null;
+        }
     }
 }

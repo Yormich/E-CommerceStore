@@ -22,9 +22,13 @@
 
         public string Password { get; set; } = "";
 
+        public string? Name { get; set; } 
+
         public Role Role { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
+
+        public DateTime RegisteredSince { get; set; }
 
         public Countries? country { get; set; }
 
@@ -36,5 +40,16 @@
         public int CartId { get; set; }
 
         public List<Order> Orders { get; set; } = null!;
+
+        public User(string Email, string Password,string? Name, Role Role,int CartId)
+        {
+            this.Email = Email;
+            this.Password = Password;
+            this.Role = Role;
+            this.Name = Name;
+            this.CartId = CartId;
+        }
+
+        protected User() { }
     }
 }

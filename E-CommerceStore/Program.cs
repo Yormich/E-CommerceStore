@@ -22,10 +22,13 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
     name: "main",
     pattern: "{controller=Main}/{action=Index}/{id?}",
     defaults: new {controller = "Main", action = "Index"}
 );
+
+
 
 app.Run();

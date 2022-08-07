@@ -9,5 +9,12 @@
 
         public int ItemPropertyCategoryId { get; set; }
         public ItemPropertyCategory PropertyCategory { get; set; } = null!;
+
+        public ItemProperty(string PropertyName,string PropertyValue,int ItemPropertyCategoryId)
+        {
+            this.PropertyName = PropertyName;
+            this.PropertyValue = PropertyValue;
+            this.ItemPropertyCategoryId = ItemPropertyCategoryId;
+        }
     }
 }

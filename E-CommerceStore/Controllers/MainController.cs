@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using E_CommerceStore.Database;
 
 namespace E_CommerceStore.Controllers
 {
@@ -7,7 +8,14 @@ namespace E_CommerceStore.Controllers
     {
         [HttpGet("")]
         [HttpGet("/Products")]
-        public ViewResult Index()
+        public async Task<ViewResult> Index([FromServices] EStoreContext db)
+        {
+            await EStoreSeed.PlantSeed(db);
+            return View();
+        }
+
+        [HttpGet("About")]
+        public ViewResult About()
         {
             return View();
         }

@@ -2,8 +2,10 @@
 {
     public class ItemBrand
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; } = String.Empty;
-        public Item Item { get; set; } = null!;
+
+        public List<Item> BrandItems { get; set; } = null!;
+        public List<ItemType> ItemTypes { get; set; } = null!;
     }
 }

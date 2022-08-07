@@ -22,6 +22,21 @@ namespace E_CommerceStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("E_CommerceStore.Models.BrandsTypes", b =>
+                {
+                    b.Property<int>("ItemBrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ItemBrandId", "ItemTypeId");
+
+                    b.HasIndex("ItemTypeId");
+
+                    b.ToTable("BrandsTypes", (string)null);
+                });
+
             modelBuilder.Entity("E_CommerceStore.Models.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -70,13 +85,11 @@ namespace E_CommerceStore.Migrations
 
                     b.HasAlternateKey("Name");
 
-                    b.HasIndex("BrandId")
-                        .IsUnique();
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ItemTypeId")
-                        .IsUnique();
+                    b.HasIndex("ItemTypeId");
 
                     b.HasIndex("SellerId");
 
@@ -136,7 +149,7 @@ namespace E_CommerceStore.Migrations
 
                     b.ToTable("Properties", (string)null);
 
-                    b.HasCheckConstraint("PropertyName", "LEN(PropertyName) > 4");
+                    b.HasCheckConstraint("PropertyName", "LEN(PropertyName) > 0");
 
                     b.HasCheckConstraint("PropertyValue", "LEN(PropertyValue) > 0");
                 });
@@ -149,7 +162,10 @@ namespace E_CommerceStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ItemId")
+                    b.Property<int?>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -160,6 +176,8 @@ namespace E_CommerceStore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("ItemTypeId");
 
                     b.ToTable("PropertyCategories", (string)null);
 
@@ -229,10 +247,18 @@ namespace E_CommerceStore.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("RegisteredSince")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CONVERT(date, GETDATE())");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
@@ -250,26 +276,45 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("Password", "LEN(Password) > 5");
                 });
 
-            modelBuilder.Entity("OrderUser", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.UserOrder", b =>
                 {
-                    b.Property<int>("OrdersId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersInOrderId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("OrdersId", "UsersInOrderId");
+                    b.HasKey("OrderId", "UserId");
 
-                    b.HasIndex("UsersInOrderId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("UserOrder", (string)null);
+                    b.ToTable("UsersOrders", (string)null);
+                });
+
+            modelBuilder.Entity("E_CommerceStore.Models.BrandsTypes", b =>
+                {
+                    b.HasOne("E_CommerceStore.Models.ItemBrand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("ItemBrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
+                        .WithMany()
+                        .HasForeignKey("ItemTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("ItemType");
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.Item", b =>
                 {
                     b.HasOne("E_CommerceStore.Models.ItemBrand", "Brand")
-                        .WithOne("Item")
-                        .HasForeignKey("E_CommerceStore.Models.Item", "BrandId")
+                        .WithMany("BrandItems")
+                        .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -278,8 +323,8 @@ namespace E_CommerceStore.Migrations
                         .HasForeignKey("CartId");
 
                     b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
-                        .WithOne("Item")
-                        .HasForeignKey("E_CommerceStore.Models.Item", "ItemTypeId")
+                        .WithMany("Items")
+                        .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -311,13 +356,17 @@ namespace E_CommerceStore.Migrations
 
             modelBuilder.Entity("E_CommerceStore.Models.ItemPropertyCategory", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.Item", "MasterItem")
+                    b.HasOne("E_CommerceStore.Models.Item", null)
                         .WithMany("Categories")
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("ItemId");
+
+                    b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
+                        .WithMany("itemPropertyCategories")
+                        .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MasterItem");
+                    b.Navigation("ItemType");
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.Order", b =>
@@ -342,19 +391,23 @@ namespace E_CommerceStore.Migrations
                     b.Navigation("Cart");
                 });
 
-            modelBuilder.Entity("OrderUser", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.UserOrder", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.Order", null)
+                    b.HasOne("E_CommerceStore.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrdersId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_CommerceStore.Models.User", null)
+                    b.HasOne("E_CommerceStore.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UsersInOrderId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.Cart", b =>
@@ -374,8 +427,7 @@ namespace E_CommerceStore.Migrations
 
             modelBuilder.Entity("E_CommerceStore.Models.ItemBrand", b =>
                 {
-                    b.Navigation("Item")
-                        .IsRequired();
+                    b.Navigation("BrandItems");
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.ItemPropertyCategory", b =>
@@ -385,8 +437,9 @@ namespace E_CommerceStore.Migrations
 
             modelBuilder.Entity("E_CommerceStore.Models.ItemType", b =>
                 {
-                    b.Navigation("Item")
-                        .IsRequired();
+                    b.Navigation("Items");
+
+                    b.Navigation("itemPropertyCategories");
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.User", b =>

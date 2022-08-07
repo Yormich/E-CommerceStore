@@ -39,6 +39,10 @@ namespace E_CommerceStore.Database
 
         public DbSet<Cart> Carts { get; set; } = null!;
 
+        public DbSet<UserOrder> UserOrders { get; set; } = null!;
+
+        public DbSet<BrandsTypes> BrandsTypes { get; set; } = null!;
+
 
         public static string MakeConnectionString(string ContentRootPath,
             string jsonFileName)
@@ -82,6 +86,10 @@ namespace E_CommerceStore.Database
             brandBuilder.HasAlternateKey(b => b.Name);
             brandBuilder.Property(b => b.Name).HasMaxLength(50);
             brandBuilder.HasCheckConstraint("Name", "LEN(Name) > 2");
+
+            brandBuilder.HasMany(b => b.ItemTypes)
+                .WithMany(type => type.Brands)
+                .UsingEntity<BrandsTypes>(bt=>bt.ToTable("BrandsTypes"));
         }
         private void ConfigureItemType(EntityTypeBuilder<ItemType> typeBuilder)
         {
@@ -90,7 +98,7 @@ namespace E_CommerceStore.Database
             typeBuilder.HasAlternateKey(t => t.Name);
             typeBuilder.Property(t => t.Name).HasMaxLength(50);
             typeBuilder.HasCheckConstraint("Name", "LEN(Name) > 3");
-            
+
         }
         private void ConfigureItemPropertyCategory(EntityTypeBuilder<ItemPropertyCategory> ipBuilder)
         {
@@ -99,9 +107,9 @@ namespace E_CommerceStore.Database
             ipBuilder.HasCheckConstraint("Name", "LEN(Name) > 3");
             ipBuilder.Property(c => c.Name).HasMaxLength(40);
 
-            ipBuilder.HasOne(c => c.MasterItem)
-                .WithMany(i => i.Categories)
-                .HasForeignKey(c => c.ItemId);
+            ipBuilder.HasOne(c => c.ItemType)
+                .WithMany(type => type.itemPropertyCategories)
+                .HasForeignKey(c => c.ItemTypeId);
         }
 
         private void ConfigureItemProperty(EntityTypeBuilder<ItemProperty> propertyBuilder)
@@ -109,7 +117,7 @@ namespace E_CommerceStore.Database
             propertyBuilder.ToTable("Properties");
             propertyBuilder.HasKey(p => p.Id);
             propertyBuilder.Property(p => p.PropertyName).HasMaxLength(50);
-            propertyBuilder.HasCheckConstraint("PropertyName", "LEN(PropertyName) > 4");
+            propertyBuilder.HasCheckConstraint("PropertyName", "LEN(PropertyName) > 0");
             propertyBuilder.Property(p => p.PropertyValue).HasMaxLength(50);
             propertyBuilder.HasCheckConstraint("PropertyValue", "LEN(PropertyValue) > 0");
 
@@ -129,12 +137,12 @@ namespace E_CommerceStore.Database
             itemsBuilder.Property(i => i.Price).HasColumnType("decimal");
 
             itemsBuilder.HasOne(i => i.Brand)
-                .WithOne(b => b.Item)
-                .HasForeignKey<Item>(i => i.BrandId);
+                .WithMany(b => b.BrandItems)
+                .HasForeignKey(i => i.BrandId);
 
             itemsBuilder.HasOne(i => i.ItemType)
-                .WithOne(t => t.Item)
-                .HasForeignKey<Item>(i => i.ItemTypeId);
+                .WithMany(t => t.Items)
+                .HasForeignKey(i => i.ItemTypeId);
 
             itemsBuilder.HasOne(i => i.ItemSeller)
                 .WithMany(s => s.Items)
@@ -152,6 +160,7 @@ namespace E_CommerceStore.Database
             usersBuilder.Property(u => u.Email).HasMaxLength(40);
             usersBuilder.Property(u => u.Password).HasMaxLength(20);
             usersBuilder.HasCheckConstraint("Password", "LEN(Password) > 5");
+            usersBuilder.Property(u => u.RegisteredSince).HasDefaultValueSql("CONVERT(date, GETDATE())");
           //  usersBuilder.HasCheckConstraint("DateOfBirth", "DateOfBirth > 1900-01-01 AND DateOfBirth < " +
             //    "CONVERT(date, GETDATE())");
 
@@ -161,7 +170,7 @@ namespace E_CommerceStore.Database
 
             usersBuilder.HasMany(u => u.Orders)
                 .WithMany(order => order.UsersInOrder)
-                .UsingEntity(j => j.ToTable("UserOrder"));
+                .UsingEntity<UserOrder>(u=>u.ToTable("UsersOrders"));
 
 
         }

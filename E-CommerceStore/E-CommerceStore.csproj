@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Utilities\" />
+    <Folder Include="Views\Shared\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
 

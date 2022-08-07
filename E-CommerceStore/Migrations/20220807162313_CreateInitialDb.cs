@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace E_CommerceStore.Migrations
 {
-    public partial class AddBaseModelsVersion : Migration
+    public partial class CreateInitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,8 +59,10 @@ namespace E_CommerceStore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RegisteredSince = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CONVERT(date, GETDATE())"),
                     country = table.Column<int>(type: "int", nullable: true),
                     AccountImageSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CartId = table.Column<int>(type: "int", nullable: false)
@@ -73,6 +75,30 @@ namespace E_CommerceStore.Migrations
                         name: "FK_Users_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BrandsTypes",
+                columns: table => new
+                {
+                    ItemBrandId = table.Column<int>(type: "int", nullable: false),
+                    ItemTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BrandsTypes", x => new { x.ItemBrandId, x.ItemTypeId });
+                    table.ForeignKey(
+                        name: "FK_BrandsTypes_Brands_ItemBrandId",
+                        column: x => x.ItemBrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BrandsTypes_Types_ItemTypeId",
+                        column: x => x.ItemTypeId,
+                        principalTable: "Types",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -148,7 +174,8 @@ namespace E_CommerceStore.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    ItemTypeId = table.Column<int>(type: "int", nullable: false),
+                    ItemId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,29 +185,34 @@ namespace E_CommerceStore.Migrations
                         name: "FK_PropertyCategories_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PropertyCategories_Types_ItemTypeId",
+                        column: x => x.ItemTypeId,
+                        principalTable: "Types",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserOrder",
+                name: "UsersOrders",
                 columns: table => new
                 {
-                    OrdersId = table.Column<int>(type: "int", nullable: false),
-                    UsersInOrderId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserOrder", x => new { x.OrdersId, x.UsersInOrderId });
+                    table.PrimaryKey("PK_UsersOrders", x => new { x.OrderId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserOrder_Orders_OrdersId",
-                        column: x => x.OrdersId,
+                        name: "FK_UsersOrders_Orders_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_UserOrder_Users_UsersInOrderId",
-                        column: x => x.UsersInOrderId,
+                        name: "FK_UsersOrders_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
@@ -199,7 +231,7 @@ namespace E_CommerceStore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Properties", x => x.Id);
-                    table.CheckConstraint("PropertyName", "LEN(PropertyName) > 4");
+                    table.CheckConstraint("PropertyName", "LEN(PropertyName) > 0");
                     table.CheckConstraint("PropertyValue", "LEN(PropertyValue) > 0");
                     table.ForeignKey(
                         name: "FK_Properties_PropertyCategories_ItemPropertyCategoryId",
@@ -210,10 +242,14 @@ namespace E_CommerceStore.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BrandsTypes_ItemTypeId",
+                table: "BrandsTypes",
+                column: "ItemTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_BrandId",
                 table: "Items",
-                column: "BrandId",
-                unique: true);
+                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CartId",
@@ -223,8 +259,7 @@ namespace E_CommerceStore.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Items_ItemTypeId",
                 table: "Items",
-                column: "ItemTypeId",
-                unique: true);
+                column: "ItemTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_SellerId",
@@ -248,24 +283,32 @@ namespace E_CommerceStore.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserOrder_UsersInOrderId",
-                table: "UserOrder",
-                column: "UsersInOrderId");
+                name: "IX_PropertyCategories_ItemTypeId",
+                table: "PropertyCategories",
+                column: "ItemTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_CartId",
                 table: "Users",
                 column: "CartId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersOrders_UserId",
+                table: "UsersOrders",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BrandsTypes");
+
+            migrationBuilder.DropTable(
                 name: "Properties");
 
             migrationBuilder.DropTable(
-                name: "UserOrder");
+                name: "UsersOrders");
 
             migrationBuilder.DropTable(
                 name: "PropertyCategories");
