@@ -8,9 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Utilities\" />
-    <Folder Include="Views\Shared\" />
-    <Folder Include="Views\User\" />
+    <Compile Remove="Utilities\**" />
+    <Compile Remove="Views\Shared\**" />
+    <Compile Remove="Views\User\**" />
+    <Content Remove="Utilities\**" />
+    <Content Remove="Views\Shared\**" />
+    <Content Remove="Views\User\**" />
+    <EmbeddedResource Remove="Utilities\**" />
+    <EmbeddedResource Remove="Views\Shared\**" />
+    <EmbeddedResource Remove="Views\User\**" />
+    <None Remove="Utilities\**" />
+    <None Remove="Views\Shared\**" />
+    <None Remove="Views\User\**" />
   </ItemGroup>
 
   <ItemGroup>
