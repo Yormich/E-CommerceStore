@@ -1,12 +1,12 @@
-﻿namespace E_CommerceStore.Models
+﻿namespace E_CommerceStore.Models.DatabaseModels
 {
     public class Item
     {
         public int Id { get; set; }
-        public string Name { get; set; } = String.Empty;
+        public string Name { get; set; } = string.Empty;
 
         public decimal Price { get; set; }
-        public string? ImageSource { get; set; } = String.Empty;
+        public string? ImageSource { get; set; } = string.Empty;
 
         public ItemBrand Brand { get; set; } = null!;
         public int BrandId { get; set; }
@@ -26,12 +26,12 @@
 
         public Order? Order { get; set; }
 
-        public Item(string Name,decimal Price,int BrandId,int TypeId,int SellerId)
+        public Item(string Name, decimal Price, int BrandId, int TypeId, int SellerId)
         {
             this.Name = Name;
             this.Price = Price;
             this.BrandId = BrandId;
-            this.ItemTypeId = TypeId;
+            ItemTypeId = TypeId;
             this.SellerId = SellerId;
         }
 
@@ -39,7 +39,7 @@
 
         public bool IsInCart()
         {
-            return CartId!=null;
+            return CartId != null;
         }
     }
 }

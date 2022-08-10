@@ -1,4 +1,4 @@
-﻿namespace E_CommerceStore.Models
+﻿namespace E_CommerceStore.Models.DatabaseModels
 {
     public class Cart
     {

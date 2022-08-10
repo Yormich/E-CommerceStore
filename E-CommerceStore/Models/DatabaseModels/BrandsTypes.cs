@@ -1,6 +1,4 @@
-﻿using E_CommerceStore.Models;
-
-namespace E_CommerceStore.Models
+﻿namespace E_CommerceStore.Models.DatabaseModels
 {
     public class BrandsTypes
     {
@@ -12,7 +10,7 @@ namespace E_CommerceStore.Models
 
         public BrandsTypes(int itemBrandId, int ItemTypeId)
         {
-            this.ItemBrandId = itemBrandId;
+            ItemBrandId = itemBrandId;
             this.ItemTypeId = ItemTypeId;
         }
     }

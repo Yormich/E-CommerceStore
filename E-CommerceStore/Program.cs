@@ -1,11 +1,8 @@
-using E_CommerceStore.Database;
-using Microsoft.EntityFrameworkCore;
+using E_CommerceStore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<EStoreContext>(options =>
-options.UseSqlServer(EStoreContext.MakeConnectionString(
-    Directory.GetCurrentDirectory(), "appDbConfig.json")));
+builder.Services.AddProjectServices();
 
 builder.Services.AddControllersWithViews();
 
@@ -18,17 +15,19 @@ WebApplication app = builder.Build();
 }*/
 
 app.UseStaticFiles();
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Map("/", (HttpContext context) =>
+{
+    context.Response.Redirect("/Products",true);
+});
 
 
 app.MapControllerRoute(
     name: "main",
-    pattern: "{controller=Main}/{action=Index}/{id?}",
-    defaults: new {controller = "Main", action = "Index"}
+    pattern: "Products/{action=Index}",
+    defaults: new {controller = "ProductCatalog",action="Index"}
 );
-
-
 
 app.Run();

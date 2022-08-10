@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using E_CommerceStore.Models;
 using System.Collections.Generic;
+using E_CommerceStore.Models.DatabaseModels;
 
 namespace E_CommerceStore.Database
 {

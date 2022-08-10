@@ -1,0 +1,38 @@
+﻿
+
+.inline{
+    display:inline;
+    color:whitesmoke;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    color:whitesmoke;
+}
+
+.link-button:focus{
+    outline:none;
+}
+
+.main-page-wrapper{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;    
+}
+
+.catalog-items-list-wrapper{
+    max-width:15%;
+}
+
+.list-types {
+    background-color: rgb(122, 9, 188);
+}
+
+
+
+.bg-silver-sand {
+    background-color: red;
+}
