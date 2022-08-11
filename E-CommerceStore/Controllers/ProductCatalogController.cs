@@ -31,14 +31,21 @@ namespace E_CommerceStore.Controllers
             [FromServices] ProductCatalogModel viewModel,int typeId, int? brandId)
         {
             if (typeId != 0)
-                viewModel.ResultItems = db.Items.Where(item=>item.ItemTypeId == typeId);
+                viewModel.ResultItems = db.Items.Where(item=>item.ItemTypeId == typeId 
+                /*&& item.IsInCart()*/);
 
             if (brandId is not null && typeId != 0)
                 viewModel.ResultItems = viewModel.ResultItems
-                    .Where(item=>true);
+                    .Where(item => item.BrandId == brandId);
 
             return View("Index",viewModel);
         }
 
+        [HttpGet("ProductPage/{itemId:int:min(1)}")]
+        public ViewResult ProductPage(int itemId)
+        {
+
+            return View("About");
+        }
     }
 }
