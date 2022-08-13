@@ -1,6 +1,15 @@
-﻿namespace E_CommerceStore.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using E_CommerceStore.Database;
+
+namespace E_CommerceStore.Controllers
 {
-    public class UserController
+    [Route("User")]
+    public class UserController : Controller
     {
+        [HttpGet("Login")]
+        public ViewResult Login()
+        {
+            return View("LoginPage");
+        }
     }
 }

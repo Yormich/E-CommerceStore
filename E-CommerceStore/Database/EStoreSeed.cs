@@ -97,14 +97,14 @@ namespace E_CommerceStore.Database
         {
             return new List<Item>()
             {
-                new Item("iPhone 13 Pro",44999,1,1,1),
-                new Item("iPhone 11",21999,1,1,1),
-                new Item("Powder Kiss Lipstick",800,2,2,2),
-                new Item("LustreGlass Sheer-Shine Lipstick",770,2,2,2),
-                new Item("Cady dress with feathers",4200,3,3,3),
-                new Item("Embroidered mesh dress",2800,3,3,3),
-                new Item("Mac Opalescent Powder",582,2,4,3),
-                new Item("Galaxy S21",29399,4,1,1)
+                new Item("iPhone 13 Pro",44999,1,1,1){ImageSource="IPhone13Pro.png"},
+                new Item("iPhone 11",21999,1,1,1){ImageSource="IPhone11.png" },
+                new Item("Powder Kiss Lipstick",800,2,2,2){ImageSource="MacKissLipstick.png"},
+                new Item("LustreGlass Sheer-Shine Lipstick",770,2,2,2){ImageSource="SheerLipstickMac.png" },
+                new Item("Cady dress with feathers",4200,3,3,3){ImageSource="CadyDressTest.png" },
+                new Item("Embroidered mesh dress",2800,3,3,3){ImageSource="MeshDressTest.png"},
+                new Item("Mac Opalescent Powder",582,2,4,3){ImageSource="MacOpalescentPowder.png" },
+                new Item("Galaxy S21",29399,4,1,1){ImageSource="Galaxy S21.png" }
             };
         }
         
