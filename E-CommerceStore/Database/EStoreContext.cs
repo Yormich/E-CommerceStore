@@ -124,6 +124,10 @@ namespace E_CommerceStore.Database
             propertyBuilder.HasOne(p => p.PropertyCategory)
                 .WithMany(c => c.CategoryProperties)
                 .HasForeignKey(p => p.ItemPropertyCategoryId);
+
+            propertyBuilder.HasOne(p => p.Item)
+                .WithMany(i => i.PersonalProperties)
+                .HasForeignKey(p => p.ItemId);
         }
 
         private void ConfigureItem(EntityTypeBuilder<Item> itemsBuilder)

@@ -65,7 +65,8 @@ namespace E_CommerceStore.Database
             {
                 new ItemBrand(){Name="Apple"},
                 new ItemBrand(){Name="Mac"},
-                new ItemBrand(){Name="Prada"}
+                new ItemBrand(){Name="Prada"},
+                new ItemBrand(){Name="Samsung"}
             };
 
         }
@@ -102,7 +103,8 @@ namespace E_CommerceStore.Database
                 new Item("LustreGlass Sheer-Shine Lipstick",770,2,2,2),
                 new Item("Cady dress with feathers",4200,3,3,3),
                 new Item("Embroidered mesh dress",2800,3,3,3),
-                new Item("Mac Opalescent Powder",582,2,4,3)
+                new Item("Mac Opalescent Powder",582,2,4,3),
+                new Item("Galaxy S21",29399,4,1,1)
             };
         }
         
@@ -122,16 +124,33 @@ namespace E_CommerceStore.Database
         {
             return new List<ItemProperty>()
             {
-                new ItemProperty("Display Diagonal","6.1",1),
-                new ItemProperty("Screen Type","Super Redina XDR",1),
-                new ItemProperty("RAM","4",2),
-                new ItemProperty("External Memory","128 Gb",2),
-                new ItemProperty("Dress Size","40 Gb",3),
-                new ItemProperty("Capacity","3 g",4),
-                new ItemProperty("Made In","China",4),
-                new ItemProperty("Capacity","10 g",5),
-                new ItemProperty("Made In","Spain",5),
+                new ItemProperty("Display Diagonal","7.3",1,1),
+                new ItemProperty("Screen Type","Super Redina XDR",1,1),
+                new ItemProperty("RAM","6 Gb",2,1),
+                new ItemProperty("External Memory","256 Gb",2, 1),
 
+                new ItemProperty("Display Diagonal","6.1",1,2),
+                new ItemProperty("Screen Type","Super Redina XDR",1,2),
+                new ItemProperty("RAM","4 Gb",2,2),
+                new ItemProperty("External Memory","128 Gb",2, 2),
+
+                new ItemProperty("Capacity","3 g",4, 3),
+                new ItemProperty("Made In","China",4, 3),
+
+                new ItemProperty("Capacity","12 g",4, 4),
+                new ItemProperty("Made In","Italy",4, 4),
+
+                new ItemProperty("Dress Size","40",3, 5),
+
+                new ItemProperty("Dress Size","42",3, 6),
+
+                new ItemProperty("Capacity","10 g",5, 7),
+                new ItemProperty("Made In","Spain",5, 7),
+
+                new ItemProperty("Display Diagonal","6.4",1,8),
+                new ItemProperty("Screen Type","Super Amoled",1,8),
+                new ItemProperty("RAM","6 Gb",2,8),
+                new ItemProperty("External Memory","256 Gb",2, 8)
             };
         }
 

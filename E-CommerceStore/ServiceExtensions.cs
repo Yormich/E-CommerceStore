@@ -1,6 +1,7 @@
 ﻿using E_CommerceStore.Database;
 using E_CommerceStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using E_CommerceStore.Utilities;
 
 namespace E_CommerceStore
 {
@@ -24,6 +25,8 @@ namespace E_CommerceStore
             implementation = new ProductCatalogModel(db.ItemTypes.Include(type => type.Brands));
     
             services.AddSingleton<ProductCatalogModel>(implementation);
+
+            services.AddScoped<ItemImagePathProvider>();
         }
     }
 }

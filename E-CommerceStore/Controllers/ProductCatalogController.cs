@@ -42,10 +42,13 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpGet("ProductPage/{itemId:int:min(1)}")]
-        public ViewResult ProductPage(int itemId)
+        public ViewResult ProductPage([FromServices] EStoreContext db,int itemId)
         {
-
-            return View("About");
+            Item item = db.Items.Where(item => item.Id == itemId)
+                .Include(item => item.ItemType)
+                .ThenInclude(type => type.itemPropertyCategories)
+                .Include(item => item.PersonalProperties).First();  
+            return View("ProductPage",item);
         }
     }
 }

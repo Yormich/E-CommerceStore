@@ -17,24 +17,24 @@
     outline:none;
 }
 
-.main-page-wrapper{
-    display:flex;
+.main-page-wrapper {
+    display: flex;
     flex-direction: row;
-    flex-wrap: wrap;    
+    flex-wrap: wrap;
+    background: linear-gradient(#A9A9A9,#FFFFFF);
 }
 
-.catalog-items-list-wrapper{
-    max-width:15%;
+.catalog-items-list-wrapper {
+    width: 15%;
+    background: linear-gradient(#A9A9A9,#FFFFFF);
 }
-
-.items-list-wrapper{
-    max-width:85%;
-}
-
 .list-types {
     background-color: rgb(122, 9, 188);
 }
 
+.items-list-wrapper {
+    width: 85%;
+}
 
 
 .bg-silver-sand {
@@ -42,6 +42,7 @@
 }
 
 .products-wrapper{
+    width:100%;
     display:flex;
     flex-direction:row;
     flex-wrap:wrap;
@@ -50,11 +51,12 @@
 .product-card {
     margin-left: 3%;
     margin-top: 3%;
-    max-width: 21%;
-    max-height: 20%;
+    max-width: 15%;
+    max-height: 15%;
     background-color: black;
-    border-color:black;
-    border-radius:6px;
+    border: 3px solid rgba(104, 104, 104,0.8);
+    border-radius: 10px;
+    box-shadow: -0.6em 0 .4em #666;
 }
 
 .product-image{
@@ -78,6 +80,7 @@
     outline:0;
     align-self:center;
     display:inline-block;
+    flex:1;
 }
 
 .card-button:hover{
@@ -89,4 +92,83 @@
     color:whitesmoke;
     text-align:right;
     margin-right:3%;
+    flex:1;
+}
+
+.product-page-wrapper {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    box-shadow: 0 0 200px 200px #666;
+    border-style:solid;
+    border-radius: 20px;
+}
+
+
+
+.product-page-main {
+    display: inline-block;
+    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction:row;
+    flex-wrap:wrap;
+}
+
+.product-info-wrapper{
+    display:flex;
+    flex-direction:row;
+    width:100%;
+}
+
+.product-page-image-cont{
+    width:40%;
+    align-self:flex-start;
+    height:30%;
+    border-radius:10px;
+    border-style:solid;
+    border-color:rgba(168,168,168,0.8);
+}
+
+.product-page-image
+{
+    width:80%;
+    height:80%;
+
+    display:block;
+    margin:auto;
+}
+
+.product-props-wrapper
+{
+    width:60%;
+    flex-direction:column;
+    margin-left:4%;
+}
+
+dl{
+    width:100%;
+}
+
+
+
+.dt-custom {
+    float: left;
+    width: 60%;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight:normal;
+}
+dd {
+    float: left;
+    width: 40%;
+    overflow: hidden;
+}
+
+.dt-custom:after{
+    content:"...................................................................."
+        "......................................................................................................";
 }

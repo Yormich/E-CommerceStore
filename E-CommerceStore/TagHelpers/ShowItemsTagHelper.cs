@@ -2,6 +2,9 @@
 using E_CommerceStore.Models.DatabaseModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc;
+using E_CommerceStore.Utilities;
+
 
 namespace E_CommerceStore.TagHelpers
 {
@@ -10,34 +13,23 @@ namespace E_CommerceStore.TagHelpers
     {
         public IEnumerable<Item> items { get; set; }
 
-        private string defaultImagePath = String.Empty;
-
-        public string DefaultImagePath
-        {
-            get
-            {
-                return defaultImagePath;
-            }
-            set
-            {
-                if(defaultImagePath == String.Empty)
-                {
-                    defaultImagePath = value;
-                }
-            }
-        }
-
         [ViewContext]
         public ViewContext ViewContext { get; set; } = null!;
 
-        public ShowItemsTagHelper(IEnumerable<Item> items)
+        IImagePathProvider itemImageProvider { get; set; }
+
+        public ShowItemsTagHelper(IEnumerable<Item> items,
+            [FromServices] ItemImagePathProvider provider)
         {
             this.items = items;
+            itemImageProvider = provider;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            defaultImagePath = Path.Combine(SetDefaultImagePath(), "DefaultItem.png");
+
+            if(itemImageProvider is not null)
+                Console.WriteLine("PROVIDER SUCCESSFULLY INJECTED");
 
             output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "div";
@@ -53,8 +45,8 @@ namespace E_CommerceStore.TagHelpers
             TagBuilder itemCard = new TagBuilder("div");
             itemCard.Attributes.Add("class", "product-card");
 
-            string ImageSource = String.IsNullOrEmpty(item.ImageSource) ? defaultImagePath :
-                item.ImageSource;
+            string ImageSource = itemImageProvider.GetImagePath(ViewContext.HttpContext,
+                item.ImageSource);
          
             itemCard.InnerHtml.AppendHtml($"<img src='{ImageSource}'" +
                 $"class='product-image'>" +
@@ -77,17 +69,7 @@ namespace E_CommerceStore.TagHelpers
                 request.PathBase.ToUriComponent(),
                 "/ProductPage/",itemId.ToString());
 
-            Console.WriteLine(baseurl);
             return baseurl;
-        }
-
-        private string SetDefaultImagePath()
-        {
-            HttpRequest request = ViewContext.HttpContext.Request;
-            return String.Concat(request.Scheme,
-                "://", request.Host.ToUriComponent(),
-                request.PathBase.ToUriComponent(),
-                "/StaticImages");
         }
     }
 }

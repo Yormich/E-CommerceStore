@@ -8,13 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Utilities\**" />
     <Compile Remove="Views\User\**" />
-    <Content Remove="Utilities\**" />
     <Content Remove="Views\User\**" />
-    <EmbeddedResource Remove="Utilities\**" />
     <EmbeddedResource Remove="Views\User\**" />
-    <None Remove="Utilities\**" />
     <None Remove="Views\User\**" />
   </ItemGroup>
 
@@ -32,7 +28,7 @@
     <Content Update="wwwroot\css\ProductCatalog.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\StaticImages\DefaultItem.png">
+    <Content Update="wwwroot\StaticImages\ProductImages\DefaultItem.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

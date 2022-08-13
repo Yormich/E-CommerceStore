@@ -20,6 +20,8 @@
 
         public List<ItemPropertyCategory> Categories { get; set; } = null!;
 
+        public List<ItemProperty> PersonalProperties { get; set; } = null!;
+
         public Cart? Cart { get; set; }
 
         public int? CartId { get; set; }
