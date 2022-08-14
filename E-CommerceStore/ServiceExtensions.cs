@@ -2,6 +2,7 @@
 using E_CommerceStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using E_CommerceStore.Utilities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace E_CommerceStore
 {
@@ -9,6 +10,14 @@ namespace E_CommerceStore
     {
         public static void AddProjectServices(this IServiceCollection services)
         {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+                    options.AccessDeniedPath = "/denied";
+                    options.LogoutPath = "/Products";
+
+                });
 
             services.AddDbContext<EStoreContext>(options =>
             options.UseSqlServer(EStoreContext.MakeConnectionString(

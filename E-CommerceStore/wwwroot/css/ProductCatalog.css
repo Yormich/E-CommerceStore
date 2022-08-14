@@ -54,7 +54,7 @@
     max-width: 15%;
     max-height: 15%;
     background-color: black;
-    border: 3px solid rgba(104, 104, 104,0.8);
+    border: 0.2em solid rgba(104, 104, 104,0.8);
     border-radius: 10px;
     box-shadow: -0.6em 0 .4em #666;
 }
@@ -105,7 +105,7 @@
     flex-wrap: wrap;
     box-shadow: 0 0 10em 10em #666;
     border-style:solid;
-    border-radius: 20px;
+    border-radius: 1em;
 }
 
 
@@ -174,4 +174,44 @@ dd {
 .dt-custom:after{
     content:"...................................................................."
         "......................................................................................................";
+}
+
+.img-user-prof {
+    max-width: 3em;
+    max-height: 3em;
+    margin: 1em;
+}
+
+.login-form-wrapper{
+    max-width:65%;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:5%;
+    margin-bottom:5%;
+}
+
+.register-link{
+    color: rgb(0, 0, 0);
+    text-decoration:underline;
+    text-align:center;
+    align-self:center;
+    cursor:pointer;
+    display:block;
+    margin-top:2%;
+}
+
+.register-link:hover{
+    color: rgb(62, 61, 61);
+}
+
+.register-form-wrapper{
+    max-width:65%;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:5%;
+    margin-bottom:5%;
+}
+
+.logout-button-wrapper{
+    margin-top:9%;
 }

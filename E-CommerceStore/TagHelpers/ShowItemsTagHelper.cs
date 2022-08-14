@@ -68,7 +68,7 @@ namespace E_CommerceStore.TagHelpers
                 "://", request.Host.ToUriComponent(),
                 request.PathBase.ToUriComponent(),
                 "/ProductPage/",itemId.ToString());
-
+            Console.WriteLine(baseurl);
             return baseurl;
         }
     }
