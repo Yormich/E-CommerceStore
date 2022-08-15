@@ -2033,7 +2033,8 @@ progress {
 .form-control::-webkit-date-and-time-value {
   height: 1.5em;
 }
-.form-control::-moz-placeholder {
+.
+-control::-moz-placeholder {
   color: #868e96;
   opacity: 1;
 }

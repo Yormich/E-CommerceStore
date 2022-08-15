@@ -5,7 +5,14 @@
         protected const string DefaultUserImage = "DefaultUser.png";
         public string GetImagePath(HttpContext context, string? possibleImageName)
         {
-            throw new NotImplementedException();
+            HttpRequest request = context.Request;
+            string imagePath = String.Concat(request.Scheme,
+                "://", request.Host.ToUriComponent(),
+                request.PathBase.ToUriComponent(),
+                "/StaticImages",
+                "/UserImages", "/");
+            imagePath += String.IsNullOrEmpty(possibleImageName) ? DefaultUserImage : possibleImageName;
+            return imagePath;
         }
     }
 }

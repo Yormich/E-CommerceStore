@@ -5,6 +5,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using E_CommerceStore.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceStore.Controllers
 {
@@ -27,7 +29,34 @@ namespace E_CommerceStore.Controllers
         [HttpGet("register")]
         public ViewResult Register()
         {
-            return View("RegisterPage");
+            return View("RegisterPage",new UserRegisterModel());
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> AcceptRegisterInfo([FromServices] EStoreContext db,
+            UserRegisterModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                if (db.Users.Where(user => user.Email == model.Email).FirstOrDefault() != null)
+                {
+                    ModelState.AddModelError("Email", "Email already Exists");
+                    return View("RegisterPage", model);
+                }
+                Console.WriteLine("Adding User");
+                User user = new User(model.Email, model.Password, null, model.Role);
+                await db.Users.AddAsync(user);
+                await db.SaveChangesAsync();
+                Console.WriteLine("Adding cart");
+                int cartOwnerId = db.Users.Where(u => u.Email == user.Email).First().Id;
+                Cart cart = new Cart(cartOwnerId);
+                await db.Carts.AddAsync(cart);
+                await db.SaveChangesAsync();
+                Console.WriteLine("Registered Successfully!");
+                return RedirectToAction("Login","User");
+            }
+
+            return View("RegisterPage",model);
         }
 
         [HttpPost("login")]

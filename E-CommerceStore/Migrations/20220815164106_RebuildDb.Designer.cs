@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceStore.Migrations
 {
     [DbContext(typeof(EStoreContext))]
-    [Migration("20220807162313_CreateInitialDb")]
-    partial class CreateInitialDb
+    [Migration("20220815164106_RebuildDb")]
+    partial class RebuildDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace E_CommerceStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("E_CommerceStore.Models.BrandsTypes", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.BrandsTypes", b =>
                 {
                     b.Property<int>("ItemBrandId")
                         .HasColumnType("int");
@@ -39,7 +39,7 @@ namespace E_CommerceStore.Migrations
                     b.ToTable("BrandsTypes", (string)null);
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Cart", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Cart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,12 +47,18 @@ namespace E_CommerceStore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
 
                     b.ToTable("Carts", (string)null);
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Item", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +108,7 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("Price", "Price > 0");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemBrand", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemBrand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,13 +130,16 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("Name", "LEN(Name) > 2", c => c.HasName("Name1"));
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemProperty", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemProperty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ItemPropertyCategoryId")
                         .HasColumnType("int");
@@ -147,6 +156,8 @@ namespace E_CommerceStore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ItemId");
+
                     b.HasIndex("ItemPropertyCategoryId");
 
                     b.ToTable("Properties", (string)null);
@@ -156,7 +167,7 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("PropertyValue", "LEN(PropertyValue) > 0");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemPropertyCategory", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemPropertyCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +197,7 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("Name", "LEN(Name) > 3", c => c.HasName("Name2"));
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemType", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -208,7 +219,7 @@ namespace E_CommerceStore.Migrations
                     b.HasCheckConstraint("Name", "LEN(Name) > 3", c => c.HasName("Name3"));
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Order", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -227,7 +238,7 @@ namespace E_CommerceStore.Migrations
                     b.ToTable("Orders", (string)null);
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.User", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -237,9 +248,6 @@ namespace E_CommerceStore.Migrations
 
                     b.Property<string>("AccountImageSource")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -270,15 +278,12 @@ namespace E_CommerceStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId")
-                        .IsUnique();
-
                     b.ToTable("Users", (string)null);
 
                     b.HasCheckConstraint("Password", "LEN(Password) > 5");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.UserOrder", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.UserOrder", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -293,15 +298,15 @@ namespace E_CommerceStore.Migrations
                     b.ToTable("UsersOrders", (string)null);
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.BrandsTypes", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.BrandsTypes", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.ItemBrand", "Brand")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemBrand", "Brand")
                         .WithMany()
                         .HasForeignKey("ItemBrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemType", "ItemType")
                         .WithMany()
                         .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -312,25 +317,36 @@ namespace E_CommerceStore.Migrations
                     b.Navigation("ItemType");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Item", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Cart", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.ItemBrand", "Brand")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.User", "Owner")
+                        .WithOne("Cart")
+                        .HasForeignKey("E_CommerceStore.Models.DatabaseModels.Cart", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Item", b =>
+                {
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemBrand", "Brand")
                         .WithMany("BrandItems")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_CommerceStore.Models.Cart", "Cart")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.Cart", "Cart")
                         .WithMany("Items")
                         .HasForeignKey("CartId");
 
-                    b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemType", "ItemType")
                         .WithMany("Items")
                         .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_CommerceStore.Models.User", "ItemSeller")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.User", "ItemSeller")
                         .WithMany("Items")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -345,24 +361,32 @@ namespace E_CommerceStore.Migrations
                     b.Navigation("ItemType");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemProperty", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemProperty", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.ItemPropertyCategory", "PropertyCategory")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.Item", "Item")
+                        .WithMany("PersonalProperties")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemPropertyCategory", "PropertyCategory")
                         .WithMany("CategoryProperties")
                         .HasForeignKey("ItemPropertyCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Item");
+
                     b.Navigation("PropertyCategory");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemPropertyCategory", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemPropertyCategory", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.Item", null)
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.Item", null)
                         .WithMany("Categories")
                         .HasForeignKey("ItemId");
 
-                    b.HasOne("E_CommerceStore.Models.ItemType", "ItemType")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.ItemType", "ItemType")
                         .WithMany("itemPropertyCategories")
                         .HasForeignKey("ItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,37 +395,26 @@ namespace E_CommerceStore.Migrations
                     b.Navigation("ItemType");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Order", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Order", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.Item", "Item")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.Item", "Item")
                         .WithOne("Order")
-                        .HasForeignKey("E_CommerceStore.Models.Order", "ItemId")
+                        .HasForeignKey("E_CommerceStore.Models.DatabaseModels.Order", "ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.User", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.UserOrder", b =>
                 {
-                    b.HasOne("E_CommerceStore.Models.Cart", "Cart")
-                        .WithOne("Owner")
-                        .HasForeignKey("E_CommerceStore.Models.User", "CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-                });
-
-            modelBuilder.Entity("E_CommerceStore.Models.UserOrder", b =>
-                {
-                    b.HasOne("E_CommerceStore.Models.Order", "Order")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("E_CommerceStore.Models.User", "User")
+                    b.HasOne("E_CommerceStore.Models.DatabaseModels.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -412,40 +425,41 @@ namespace E_CommerceStore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Cart", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Cart", b =>
                 {
                     b.Navigation("Items");
-
-                    b.Navigation("Owner")
-                        .IsRequired();
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.Item", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Item", b =>
                 {
                     b.Navigation("Categories");
 
                     b.Navigation("Order");
+
+                    b.Navigation("PersonalProperties");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemBrand", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemBrand", b =>
                 {
                     b.Navigation("BrandItems");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemPropertyCategory", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemPropertyCategory", b =>
                 {
                     b.Navigation("CategoryProperties");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.ItemType", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemType", b =>
                 {
                     b.Navigation("Items");
 
                     b.Navigation("itemPropertyCategories");
                 });
 
-            modelBuilder.Entity("E_CommerceStore.Models.User", b =>
+            modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.User", b =>
                 {
+                    b.Navigation("Cart");
+
                     b.Navigation("Items");
                 });
 #pragma warning restore 612, 618

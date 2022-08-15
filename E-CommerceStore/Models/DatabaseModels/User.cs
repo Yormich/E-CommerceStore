@@ -1,18 +1,28 @@
-﻿namespace E_CommerceStore.Models.DatabaseModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace E_CommerceStore.Models.DatabaseModels
 {
     public enum Countries
     {
+        [Display(Name = "Ukraine")]
         Ukraine,
+        [Display(Name = "England")]
         England,
+        [Display(Name = "Poland")]
         Poland,
+        [Display(Name = "Germany")]
         Germany,
+        [Display(Name = "USA")]
         USA,
+        [Display(Name = "France")]
         France
     };
 
     public enum Role
     {
+        [Display(Name ="Buyer")]
         Buyer,
+        [Display(Name ="Seller")]
         Seller
     }
     public class User
@@ -32,22 +42,20 @@
 
         public Countries? country { get; set; }
 
-        public string? AccountImageSource { get; set; } = "";
+        public string? AccountImageSource { get; set; }
 
         public List<Item> Items { get; set; } = null!;
 
         public Cart? Cart { get; set; } = null!;
-        public int CartId { get; set; }
 
         public List<Order> Orders { get; set; } = null!;
 
-        public User(string Email, string Password, string? Name, Role Role, int CartId)
+        public User(string Email, string Password, string? Name, Role Role)
         {
             this.Email = Email;
             this.Password = Password;
             this.Role = Role;
             this.Name = Name;
-            this.CartId = CartId;
         }
 
         protected User() { }

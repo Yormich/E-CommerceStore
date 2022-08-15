@@ -6,6 +6,13 @@
 
         public User Owner { get; set; } = null!;
 
+        public int OwnerId { get; set; }
+
+        public Cart(int OwnerId)
+        {
+            this.OwnerId = OwnerId;
+        }
+
         public List<Item> Items { get; set; } = null!;
     }
 }

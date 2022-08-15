@@ -36,6 +36,8 @@ namespace E_CommerceStore
             services.AddSingleton<ProductCatalogModel>(implementation);
 
             services.AddScoped<ItemImagePathProvider>();
+
+            services.AddScoped<UserImagePathProvider>();
         }
     }
 }

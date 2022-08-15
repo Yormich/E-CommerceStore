@@ -1,4 +1,4 @@
-﻿
+﻿@inject UserImagePathProvider userImageProvider
 
 <!DOCTYPE html>
 <html lang="en">
@@ -60,9 +60,24 @@
                             }
                         }
                        }
+                    @if(User.Identity.IsAuthenticated)
+                    {
+                        Claim? imageClaim = User.Claims.FirstOrDefault(
+                            claim => claim.Type == "ImageSource");
+                        if(imageClaim!= null)
+                        {
+                            <a asp-controller="User" asp-action="Account">
+                              <img class="img-user-prof" src="@userImageProvider.GetImagePath(Context,
+                                    imageClaim.Value)" />
+                          </a>   
+                        }
+                    }
+                    else
+                    {
                           <a asp-controller="User" asp-action="Account">
                               <img class="img-user-prof" src="~/StaticImages/UserImages/DefaultUser.png" />
-                          </a>
+                          </a>   
+                    }
                           <a asp-controller="Cart" asp-action="CartPage">
                               <img class="img-user-prof" src="~/StaticImages/Cart.png"/>
                           </a>

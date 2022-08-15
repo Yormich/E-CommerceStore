@@ -1,4 +1,4 @@
-﻿
+﻿@model UserRegisterModel
 
 
 
@@ -6,7 +6,33 @@
     <form action="/register"  method="post">
         <legend>Register</legend>
         <fieldset>
+            <div class="form-group">
+                <label asp-for="Email" class="form-label mt-4">Email address</label>
+                <input asp-for="Email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                <br />
+                <span asp-validation-for="Email"></span>
+            </div>
+              <div class="form-group">
+                <label asp-for="Password" class="form-label mt-4">Password</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                <small id="passwordHelp" class="form-text text-muted">
+                    Must contain at least one 
+                    number and one uppercase and lowercase letter, from 8 to 30 characters</small>
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepeatedPassword" class="form-label mt-4">Repeat Password</label>
+                <input asp-for="RepeatedPassword" type="password" class="form-control" placeholder="Password">
+                <span asp-validation-for="RepeatedPassword"></span>
+            </div>
+            <div class="form-group">
+                 <label asp-for="Role" class="form-label mt-4">Select Role</label>
+                  <select asp-for="Role" asp-items="@new SelectList(Enum.GetNames(typeof(Role)))" class="form-select"></select>
+                  <span asp-validation-for="Role"></span>
+            </div>
 
+            <button type="submit" class="btn btn-dark" style="margin-top:1%;">Submit</button>
         </fieldset>
     </form>
 </div>

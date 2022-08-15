@@ -27,16 +27,16 @@ namespace E_CommerceStore.Database
                 await context.BrandsTypes.AddRangeAsync(MakeBrandsTypes());
                 await context.SaveChangesAsync();
             }
-            if (!context.Carts.Any())
-            {
-                Console.WriteLine("Adding carts");
-                await context.Carts.AddRangeAsync(MakeCarts());
-                await context.SaveChangesAsync();
-            }
             if (!context.Users.Any())
             {
                 Console.WriteLine("AddingUsers");
                 await context.Users.AddRangeAsync(MakeUsers());
+                await context.SaveChangesAsync();
+            }
+            if (!context.Carts.Any())
+            {
+                Console.WriteLine("Adding carts");
+                await context.Carts.AddRangeAsync(MakeCarts());
                 await context.SaveChangesAsync();
             }
             if (!context.Items.Any())
@@ -158,12 +158,13 @@ namespace E_CommerceStore.Database
         {
             return new List<User>()
             {
-                new User("bestSeller@gmail.com","Dash212","Saul Goodman",Role.Seller,1),
-                new User("anotherSeller@gmail.com","Qwerty404","Nick Paul",Role.Seller,2),
-                new User("forgotMyEmail@gmail.com","AndPassword2","Billie Kitchen",Role.Seller,3),
-                new User("lanister2028@gmail.com","Dima2028",null,Role.Buyer,4),
-                new User("difficultMail99@gmail.com","randomPass",null,Role.Buyer,5),
-                new User("basicMail14@gmail.com","asd12345678",null,Role.Buyer,6)
+                new User("bestSeller@gmail.com","Dash212","Saul Goodman",Role.Seller),
+                new User("anotherSeller@gmail.com","Qwerty404","Nick Paul",Role.Seller),
+                new User("forgotMyEmail@gmail.com","AndPassword2","Billie Kitchen",Role.Seller),
+                new User("lanister2028@gmail.com","Dima2028",null,Role.Buyer)
+                { AccountImageSource= "Luntik.png"},
+                new User("difficultMail99@gmail.com","randomPass",null,Role.Buyer),
+                new User("basicMail14@gmail.com","asd12345678",null,Role.Buyer)
             };
         }
 
@@ -171,12 +172,12 @@ namespace E_CommerceStore.Database
         {
             return new List<Cart>()
             {
-                new Cart(),
-                new Cart(),
-                new Cart(),
-                new Cart(),
-                new Cart(),
-                new Cart(),
+                new Cart(1),
+                new Cart(2),
+                new Cart(3),
+                new Cart(4),
+                new Cart(5),
+                new Cart(6),
             };
         }
     }

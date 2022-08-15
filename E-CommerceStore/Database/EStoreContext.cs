@@ -168,10 +168,6 @@ namespace E_CommerceStore.Database
           //  usersBuilder.HasCheckConstraint("DateOfBirth", "DateOfBirth > 1900-01-01 AND DateOfBirth < " +
             //    "CONVERT(date, GETDATE())");
 
-            usersBuilder.HasOne(u => u.Cart)
-                .WithOne(cart => cart.Owner)
-                .HasForeignKey<User>(u => u.CartId);
-
             usersBuilder.HasMany(u => u.Orders)
                 .WithMany(order => order.UsersInOrder)
                 .UsingEntity<UserOrder>(u=>u.ToTable("UsersOrders"));
@@ -194,6 +190,10 @@ namespace E_CommerceStore.Database
         {
             cartBuilder.ToTable("Carts");
             cartBuilder.HasKey(cart => cart.Id);
+
+            cartBuilder.HasOne(cart => cart.Owner)
+                .WithOne(user => user.Cart)
+                .HasForeignKey<Cart>(cart => cart.OwnerId);
         }        
     }
 }
