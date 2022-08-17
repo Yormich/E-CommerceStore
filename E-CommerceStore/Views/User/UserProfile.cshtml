@@ -1,8 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model User
+@inject UserImagePathProvider userImageProvider
+
 @{
-    string LoginedEmail = null;
+    string LoginedEmail = String.Empty;
     foreach(Claim claim in User.Claims)
     {
         if(claim.Type == ClaimTypes.Email)
@@ -13,16 +13,107 @@
 }
 
 
-
-<h1>Hello @LoginedEmail !!</h1>
-
-
-@section Footer{
-     <div class="footer-basic">
-                <div class="social">
-                <a href="https://www.instagram.com/rodgerburns/"><img src="~/StaticImages/instagramRef.png" class="social-img"/></a>
-                <a href="https://github.com/Yormich"><img src="~/StaticImages/gitHubRef.png" class="social-img"/></a>
-                </div>
-                <p class="copyright">E-Commerce Store © @DateTime.Now.Year</p>
+<div class="user-profile-wrapper">
+    <div class="categories-list-wrapper">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action">
+                <a href="user-Account" class="link-button">Personal Info</a>
+            </li>
+            <li class="list-group-item list-group-item-action">
+                <a href="Orders/@Model.Id" class="link-button">Order History</a>
+            </li>
+        </ul>
     </div>
+    <div class="profile-content-wrapper">
+        <div class="user-image-form-wrapper">
+
+            <form method="post" asp-controller="User" asp-action="UploadImage"
+                enctype="multipart/form-data">
+                <fieldset>
+                    <legend>Account Image</legend>
+                        <div class="user-profile-image-cont">
+                                <img src="@userImageProvider.GetImagePath(Context, Model.AccountImageSource)"
+                                class="user-profile-image"/>
+                        </div>
+                        <div class="form-group">
+                           <label asp-for="AccountImageSource" class="form-label mt-4">Select your image</label>
+                           <input type="file" class="form-control" name="file" id="file"/>
+                           <small id="formFile" class="form-text text-muted">
+                               Image size should be below 3Mb.
+                               Supportable Formats: .jpg, .png
+                           </small>
+                           <span asp-validation-for="AccountImageSource"></span>
+                        </div>
+                        <input type="submit" class="btn btn-dark" style="margin-top:1%;" value="Confirm" />
+                </fieldset>
+            </form>
+        </div>
+        <div class="user-mainProps-form-wrapper">
+            <form  asp-action="PutMainProps" asp-controller="User">
+                <legend>Main Info</legend>
+                <fieldset>
+                  <div class="form-group">
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label mt-4">Email address</label>
+                            <input asp-for="Email" name="newEmail" type="email" class="form-control" 
+                            aria-describedby="emailHelp" placeholder="Enter email" value="@Model.Email">
+                            <small id="emailHelp" class="form-text text-muted">To update your email you need to change password too</small>
+                            <br />
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                       <label for="oldPassword" class="form-label mt-4">Old Password</label>
+                       <input for="oldPassword" name="oldPassword" type="password" class="form-control"
+                            placeholder="Password">
+                       </div>
+                       <div class="form-group">
+                       <label asp-for="Password" class="form-label mt-4">New Password</label>
+                       <input asp-for="Password" name="newPassword" type="password" class="form-control" 
+                            placeholder="Password">
+                       <small id="passwordHelp" class="form-text text-muted">
+                                Must contain at least one 
+                                number and one uppercase and lowercase letter, from 8 to 30 characters</small>
+                       <span asp-validation-for="Password"></span>
+                  </div>
+                </fieldset>
+                <input type="submit" class="btn btn-dark" style="margin-top:1%;" value="Save Changes" />
+            </form>
+        </div>
+        <div class="user-addProps-form-wrapper">
+            <form asp-action="PutAdditionalProps" asp-controller="User">
+                <legend>Additional Info</legend>
+                <fieldset>
+                    <div class="form-group">
+                        <label asp-for="Name" class="form-label mt-4">Name</label>
+                        <input asp-for="Name" name="Name" type="text" class="form-control" 
+                            aria-describedby="emailHelp" placeholder="Enter your Name" value="@Model.Name">
+                        <small id="nameHelp" class="form-text text-muted">At least 3 characters without digits and special characters</small>
+                        <br />
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="country" class="form-label mt-4">Country</label>
+                        <select asp-for="country" name="country"
+                        asp-items="new SelectList(Enum.GetNames(typeof(Countries)))" class="form-select"></select>
+                        <span asp-validation-for="country"></span>
+                    </div>
+                      <div class="form-group">
+                        <label asp-for="DateOfBirth" class="form-label mt-4">Date Of Birth</label>
+                        <input asp-for="DateOfBirth" name="dateOfBirth" type="date" class="form-control" 
+                            aria-describedby="emailHelp" placeholder="Enter your Date Of Birth"
+                            value="@Model.DateOfBirth?.ToShortDateString()">
+                        <span asp-validation-for="DateOfBirth"></span>
+                    </div>
+                </fieldset>
+                <input type="submit" class="btn btn-dark" style="margin-top:1%;" value="Save Changes" />
+            </form>
+        </div>
+
+        <div class="user-registration-date-wrapper">
+            Registered Since
+            <h3>@Model.RegisteredSince.ToShortDateString()</h3>
+        </div>
+    </div>
+</div>
+ 
+@section Footer{
 }

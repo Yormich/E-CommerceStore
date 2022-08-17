@@ -161,6 +161,7 @@ namespace E_CommerceStore.Database
         {
             usersBuilder.ToTable("Users");
             usersBuilder.HasKey(u => u.Id);
+          //  usersBuilder.HasAlternateKey(u => u.Email);
             usersBuilder.Property(u => u.Email).HasMaxLength(40);
             usersBuilder.Property(u => u.Password).HasMaxLength(20);
             usersBuilder.HasCheckConstraint("Password", "LEN(Password) > 5");

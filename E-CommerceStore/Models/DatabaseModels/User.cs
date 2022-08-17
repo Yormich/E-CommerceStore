@@ -4,6 +4,8 @@ namespace E_CommerceStore.Models.DatabaseModels
 {
     public enum Countries
     {
+        [Display(Name ="None")]
+        None,
         [Display(Name = "Ukraine")]
         Ukraine,
         [Display(Name = "England")]
@@ -17,7 +19,6 @@ namespace E_CommerceStore.Models.DatabaseModels
         [Display(Name = "France")]
         France
     };
-
     public enum Role
     {
         [Display(Name ="Buyer")]
@@ -28,10 +29,17 @@ namespace E_CommerceStore.Models.DatabaseModels
     public class User
     {
         public int Id { get; set; }
+
+        [EmailAddress(ErrorMessage = "WrongEmail")]
         public string Email { get; set; } = "";
 
+        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$",
+            ErrorMessage = "Wrong Password Format")]
         public string Password { get; set; } = "";
 
+
+        [RegularExpression(@"[A-Za-z]", ErrorMessage = "Wrong Name Format")]
+        [StringLength(40,MinimumLength = 3, ErrorMessage = "Name Length Should be between 3 and 40 characters")]
         public string? Name { get; set; }
 
         public Role Role { get; set; }

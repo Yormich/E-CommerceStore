@@ -12,6 +12,7 @@
                 "/StaticImages",
                 "/UserImages", "/");
             imagePath += String.IsNullOrEmpty(possibleImageName) ? DefaultUserImage : possibleImageName;
+            Console.WriteLine(imagePath);
             return imagePath;
         }
     }

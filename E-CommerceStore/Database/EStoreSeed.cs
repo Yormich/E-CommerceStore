@@ -89,7 +89,8 @@ namespace E_CommerceStore.Database
                 new BrandsTypes(1,1),
                 new BrandsTypes(2,2),
                 new BrandsTypes(3,3),
-                new BrandsTypes(2,4)
+                new BrandsTypes(2,4),
+                new BrandsTypes(4,1)
             };
         }
 

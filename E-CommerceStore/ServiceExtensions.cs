@@ -38,6 +38,8 @@ namespace E_CommerceStore
             services.AddScoped<ItemImagePathProvider>();
 
             services.AddScoped<UserImagePathProvider>();
+
+           // services.AddSingleton<IFileProvider>();
         }
     }
 }
