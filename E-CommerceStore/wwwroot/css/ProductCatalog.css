@@ -318,8 +318,53 @@ input.valid {
     width: 45%;
 }
 
+.user-finProps-form-wrapper {
+    position:relative;
+    margin-top: 2%;
+    margin-right: 3%;
+    margin-bottom: 2%;
+    margin-left: 2%;
+    width: 45%;
+    height:auto;
+    align-items:flex-end;
+}
+
 .user-registration-date-wrapper{
+    position:absolute;
     display:block;
     align-self:flex-end;
     margin-left:auto;
+    bottom:0;
+    right:0;
+}
+
+.delete-user-form-wrapper {
+    position: absolute;
+    display: inline-block;
+    align-self: flex-end;
+    margin-left: auto;
+    bottom: 4%;
+    right: 25%;
+}
+
+.delete-userpage-form-wrapper {
+    width: 30%;
+    height: 30%;
+    margin-top: 10%;
+    margin-bottom:10%;
+    margin-left:auto;
+    margin-right:auto;
+    border: 0.4em solid rgb(2, 2, 2);
+    border-radius: 0.3em;
+    box-shadow: 0 0 10em 10em #666;
+}
+
+.dbtn-wrapper{
+    position:relative;
+}
+
+.alignbr{
+    position:absolute;
+    bottom:0;
+    right:0;
 }

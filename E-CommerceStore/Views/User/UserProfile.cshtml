@@ -12,6 +12,21 @@
     }
 }
 
+@functions{
+    string ConvertDateToHtmlFormatted(DateTime date)
+    {
+        string year = date.Year.ToString();
+        while(year.Length != 4)
+        {
+            year = "0" + year;
+        }
+        string month = date.Month >= 10 ? date.Month.ToString() : "0" + date.Month.ToString();
+        string day = date.Day >= 10 ? date.Day.ToString() : "0" + date.Day.ToString();
+        string htmlDate = year + "-" + month + "-" + day;
+        return htmlDate;
+    }
+}
+
 
 <div class="user-profile-wrapper">
     <div class="categories-list-wrapper">
@@ -100,17 +115,25 @@
                         <label asp-for="DateOfBirth" class="form-label mt-4">Date Of Birth</label>
                         <input asp-for="DateOfBirth" name="dateOfBirth" type="date" class="form-control" 
                             aria-describedby="emailHelp" placeholder="Enter your Date Of Birth"
-                            value="@Model.DateOfBirth?.ToShortDateString()">
+                            value="@ConvertDateToHtmlFormatted(Model.DateOfBirth ?? DateTime.Now)">
                         <span asp-validation-for="DateOfBirth"></span>
                     </div>
                 </fieldset>
                 <input type="submit" class="btn btn-dark" style="margin-top:1%;" value="Save Changes" />
             </form>
         </div>
-
-        <div class="user-registration-date-wrapper">
-            Registered Since
-            <h3>@Model.RegisteredSince.ToShortDateString()</h3>
+        <div class="user-finProps-form-wrapper">
+            <div class="delete-user-form-wrapper">
+                <form method="get" asp-action="ConfirmDelete" asp-controller="User" asp-route-id="@Model.Id">
+                    <div form-group>
+                        <input type="submit" class="btn btn-danger" style="margin-top:1%" value="Delete Account" />
+                    </div>
+                </form>
+            </div>
+            <div class="user-registration-date-wrapper">
+                Registered Since 
+                <h3>@Model.RegisteredSince.ToShortDateString()</h3>
+            </div>
         </div>
     </div>
 </div>

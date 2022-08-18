@@ -108,10 +108,29 @@ namespace E_CommerceStore.Controllers
         }
 
         [Authorize]
-        [HttpPut("user-Account")]
+        [HttpGet("user-Account/Delete/{id:int}")]
+        public IActionResult ConfirmDelete(int id)
+        {
+            return View("DeleteUser", id);
+        }
 
         [Authorize]
-        [HttpDelete("user-Account")]
+        [HttpPost("user-Account/Delete/{id:int}")]
+        public async Task<IActionResult> Delete([FromServices] EStoreContext db,int id,string Password)
+        {
+            User user = await db.Users.FirstAsync(user => user.Id == id);
+            if(user.Password != Password)
+            {
+                TempData["Password"] = "Wrong Password";
+                return View("DeleteUser", id);
+            }
+            db.Users.Remove(user);
+
+            await db.SaveChangesAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Login","User");
+        }
 
         private string GetRole(Role RoleId)
         {
@@ -235,7 +254,6 @@ namespace E_CommerceStore.Controllers
                 }
                 await db.SaveChangesAsync();
             }
-
             return View("UserProfile",user);
         }
 
