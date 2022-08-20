@@ -43,6 +43,7 @@ namespace E_CommerceStore.Database
 
         public DbSet<BrandsTypes> BrandsTypes { get; set; } = null!;
 
+        public DbSet<ItemCart> itemCarts { get; set; } = null!;
 
         public static string MakeConnectionString(string ContentRootPath,
             string jsonFileName)
@@ -152,9 +153,9 @@ namespace E_CommerceStore.Database
                 .WithMany(s => s.Items)
                 .HasForeignKey(i => i.SellerId);
 
-            itemsBuilder.HasOne(i => i.Cart)
+            itemsBuilder.HasMany(i => i.Carts)
                 .WithMany(cart => cart.Items)
-                .HasForeignKey(i => i.CartId);
+                 .UsingEntity<ItemCart>(ic => ic.ToTable("ItemCart"));
         }
 
         private void ConfigureUser(EntityTypeBuilder<User> usersBuilder)

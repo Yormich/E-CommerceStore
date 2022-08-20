@@ -22,26 +22,21 @@
 
         public List<ItemProperty> PersonalProperties { get; set; } = null!;
 
-        public Cart? Cart { get; set; }
-
-        public int? CartId { get; set; }
+        public List<Cart> Carts { get; set; } = null!;
+        public int Amount { get; set; } 
 
         public Order? Order { get; set; }
 
-        public Item(string Name, decimal Price, int BrandId, int TypeId, int SellerId)
+        public Item(string Name, decimal Price, int BrandId, int TypeId, int SellerId, int Amount = 1)
         {
             this.Name = Name;
             this.Price = Price;
             this.BrandId = BrandId;
             ItemTypeId = TypeId;
             this.SellerId = SellerId;
+            this.Amount = Amount;
         }
 
         protected Item() { }
-
-        public bool IsInCart()
-        {
-            return CartId != null;
-        }
     }
 }

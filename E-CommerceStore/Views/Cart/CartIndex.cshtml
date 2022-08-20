@@ -1,5 +1,82 @@
-﻿@model int
+﻿@model IEnumerable<Item>
 
-<h1>Secured @Model</h1>
+@inject ItemImagePathProvider itemImageProvider
 
-<h2>Welcome @User?.Identity?.Name</h2>
+
+<div>
+    <div class="cart-main-wrapper">
+        @if(Model.Count()!=0)
+        {
+            <table class="table table-bordered table-striped table-dark" style="width:60%;">
+                <thead>
+                    <tr>
+                        <th scope="col" class="tableHeader">Item Id</th>
+                        <th scope="col" class="tableHeader">Image</th>
+                        <th scope="col" class="tableHeader">Name</th>
+                        <th scope="col" class="tableHeader">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(Item item in Model)
+                    {
+                        <tr class="table-active">
+                            <td scope="row"
+                                style="font-size:1.8em;width:5%;text-align:center;vertical-align:middle;">
+                                    @item.Id
+                            </td>
+                            <td style="width:30%;">
+                                <div>
+                                    <img src="@itemImageProvider.GetImagePath(Context,item.ImageSource)"
+                                        class="align-cItemImage-center">
+                                </div>
+                            </td>
+                            <td 
+                            style="font-size:1.5em;width:15%;position:relative;text-align:center;vertical-align:middle;">
+                                   <a asp-action="ProductPage" asp-controller="ProductCatalog"
+                                        asp-route-itemId="@item.Id" class="card-button">
+                                            @item.Name
+                                   </a> 
+                            </td>
+                            <td style="width:10%;">
+                                <a asp-action="DeleteFromCart" asp-controller="Cart" asp-route-itemId="@item.Id"
+                                    class="btn btn-danger">
+                                    <span style="color:black">Delete</span>
+                                    <img src="~/StaticImages/Trash.svg">
+                                </a>
+                                <a asp-action="ConfirmItemOrder" asp-controller="Order" asp-route-itemId="@item.Id"
+                                    class="btn btn-success">
+                                    Make Order
+                                    <img src="~/StaticImages/Check.svg">
+                                </a>
+                            </td>
+                        </tr>    
+                    }
+                </tbody>
+            </table>
+            <a asp-action="ConfirmFromCart" asp-controller="Order" class="btn btn-success" 
+                style="float:right;width:20%;">
+                    Confirm Order
+            </a>
+        }
+        else
+        {
+            <div class="no-items-inCart">
+                <img src="~/StaticImages/NoItemsFound.png" style="width:50%;height:50%;margin:auto;">
+                <a asp-action="Index" asp-controller="ProductCatalog" class="btn btn-dark"
+                style="float:right;width:20%;">
+                    Add Some Items To Cart
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Footer{
+     <div class="footer-basic">
+        <div class="social">
+            <a href="https://www.instagram.com/rodgerburns/"><img src="~/StaticImages/instagramRef.png" class="social-img"/></a>
+            <a href="https://github.com/Yormich"><img src="~/StaticImages/gitHubRef.png" class="social-img"/></a>
+        </div>
+        <p class="copyright">E-Commerce Store © @DateTime.Now.Year</p>
+    </div>
+}

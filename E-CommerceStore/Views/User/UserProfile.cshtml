@@ -35,7 +35,7 @@
                 <a href="user-Account" class="link-button">Personal Info</a>
             </li>
             <li class="list-group-item list-group-item-action">
-                <a href="Orders/@Model.Id" class="link-button">Order History</a>
+                <a asp-action="Index" asp-controller="Order" class="link-button">Order History</a>
             </li>
         </ul>
     </div>
@@ -124,11 +124,10 @@
         </div>
         <div class="user-finProps-form-wrapper">
             <div class="delete-user-form-wrapper">
-                <form method="get" asp-action="ConfirmDelete" asp-controller="User" asp-route-id="@Model.Id">
-                    <div form-group>
-                        <input type="submit" class="btn btn-danger" style="margin-top:1%" value="Delete Account" />
-                    </div>
-                </form>
+                <a asp-action="ConfirmDelete" asp-controller="User" class="btn btn-danger"
+                asp-route-id="@Model.Id">
+                    Delete Account
+                </a>
             </div>
             <div class="user-registration-date-wrapper">
                 Registered Since 

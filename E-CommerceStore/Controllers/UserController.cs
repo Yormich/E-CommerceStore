@@ -13,6 +13,15 @@ namespace E_CommerceStore.Controllers
 {
     public class UserController : Controller
     {
+        private readonly EStoreContext db;
+
+        public UserController(EStoreContext db)
+        {
+            this.db = db;
+        }
+
+
+
         [HttpGet("login")]
         public ViewResult Login(string returnUrl)
         {
@@ -34,8 +43,7 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> AcceptRegisterInfo([FromServices] EStoreContext db,
-            UserRegisterModel model)
+        public async Task<IActionResult> AcceptRegisterInfo(UserRegisterModel model)
         {
             if (ModelState.IsValid)
             {
@@ -64,8 +72,7 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Validate(string email, string password, string ReturnUrl,
-            [FromServices] EStoreContext db)
+        public async Task<IActionResult> Validate(string email, string password, string ReturnUrl)
         {
             User? user = db.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
             if (user != null)
@@ -100,9 +107,9 @@ namespace E_CommerceStore.Controllers
 
         [Authorize]
         [HttpGet("user-Account")]
-        public async Task<IActionResult> Account([FromServices] EStoreContext db)
+        public async Task<IActionResult> Account()
         {
-            User user = await GetUserByClaimId(db);
+            User user = await GetUserByClaimId();
 
             return View("UserProfile", user);
         }
@@ -116,7 +123,7 @@ namespace E_CommerceStore.Controllers
 
         [Authorize]
         [HttpPost("user-Account/Delete/{id:int}")]
-        public async Task<IActionResult> Delete([FromServices] EStoreContext db,int id,string Password)
+        public async Task<IActionResult> Delete(int id,string Password)
         {
             User user = await db.Users.FirstAsync(user => user.Id == id);
             if(user.Password != Password)
@@ -139,12 +146,12 @@ namespace E_CommerceStore.Controllers
 
         [Authorize]
         [HttpPost("/user-Account/pImage")]
-        public async Task<IActionResult> UploadImage([FromServices] EStoreContext db, IFormFile file)
+        public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            User user = await GetUserByClaimId(db);
+            User user = await GetUserByClaimId();
 
             string pngFormatRegex = ".png$|.jpg$";
-            int ThreeMegaBytes = 3 * 1024 * 1024;
+            const int ThreeMegaBytes = 3 * 1024 * 1024;
             Regex regex = new Regex(pngFormatRegex);
             if (!regex.IsMatch(file.FileName))
             {
@@ -175,10 +182,9 @@ namespace E_CommerceStore.Controllers
 
         [Authorize]
         [HttpPost("user-Account/pMainProps")]
-        public async Task<IActionResult> PutMainProps([FromServices] EStoreContext db,
-            string newEmail, string oldPassword, string newPassword)
+        public async Task<IActionResult> PutMainProps(string newEmail, string oldPassword, string newPassword)
         {
-            User user = await GetUserByClaimId(db);
+            User user = await GetUserByClaimId();
 
             if (ModelState.IsValid)
             {
@@ -196,20 +202,13 @@ namespace E_CommerceStore.Controllers
                     updatedClaims.Add(ClaimTypes.Email, user.Email);
                 }
 
-                Regex regex = new Regex(@"(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,30}");
-
                 if (oldPassword != user.Password)
                 {
                     ModelState.AddModelError("Password", "To update your password you have to enter old one");
                     Response.StatusCode = 400;
                     return View("UserProfile", user);
                 }
-                else if (!regex.IsMatch(newPassword))
-                {
-                    ModelState.AddModelError("Password", "Wrong Password Format");
-                    Response.StatusCode = 400;
-                    return View("UserProfile", user);
-                }
+
                 user.Password = newPassword;
                 await db.SaveChangesAsync();
                 updatedClaims.Add("Password", user.Password);
@@ -222,20 +221,14 @@ namespace E_CommerceStore.Controllers
 
         [Authorize]
         [HttpPost("user-Account/AddProps")]
-        public async Task<IActionResult> PutAdditionalProps([FromServices] EStoreContext db,
+        public async Task<IActionResult> PutAdditionalProps(
             string Name,Countries country,DateTime dateOfBirth)
         {
             Console.WriteLine($"{Name} {country} {dateOfBirth}");
-            User user = await GetUserByClaimId(db);
+            User user = await GetUserByClaimId();
 
             if(ModelState.IsValid)
             {
-                Regex nameCheck = new Regex(@"[a-zA-Z]");
-                if(Name.Length != nameCheck.Matches(Name).Count)
-                {
-                    ModelState.AddModelError("Name", "Wrong Name Format");
-                    return View("UserProfile", user);
-                }
 
                 user.Name = Name;
                 if (country != Countries.None && country != user.country)
@@ -251,13 +244,13 @@ namespace E_CommerceStore.Controllers
                 else
                 {
                     ModelState.AddModelError("DateOfBirth", "Wrong DateOfBirth");
+                    return View("UserProfile", user);
                 }
                 await db.SaveChangesAsync();
             }
             return View("UserProfile",user);
         }
-
-        private async Task<User> GetUserByClaimId([FromServices] EStoreContext db)
+        private async Task<User> GetUserByClaimId()
         {
             int UserId = 0;
             foreach (Claim claim in User.Claims)
@@ -273,7 +266,7 @@ namespace E_CommerceStore.Controllers
 
         private void UpdateClaimValues(Dictionary<string,string> NameValue)
         {
-            var user = User as ClaimsPrincipal;
+            var user = User;
             if (user == null)
                 return;
                

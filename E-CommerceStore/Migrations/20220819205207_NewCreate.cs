@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace E_CommerceStore.Migrations
 {
-    public partial class RebuildDb : Migration
+    public partial class NewCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,7 +47,7 @@ namespace E_CommerceStore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegisteredSince = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CONVERT(date, GETDATE())"),
@@ -115,7 +115,7 @@ namespace E_CommerceStore.Migrations
                     BrandId = table.Column<int>(type: "int", nullable: false),
                     ItemTypeId = table.Column<int>(type: "int", nullable: false),
                     SellerId = table.Column<int>(type: "int", nullable: false),
-                    CartId = table.Column<int>(type: "int", nullable: true)
+                    Amount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,11 +130,6 @@ namespace E_CommerceStore.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Items_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Items_Types_ItemTypeId",
                         column: x => x.ItemTypeId,
                         principalTable: "Types",
@@ -146,6 +141,30 @@ namespace E_CommerceStore.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ItemCart",
+                columns: table => new
+                {
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    CartId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ItemCart", x => new { x.CartId, x.ItemId });
+                    table.ForeignKey(
+                        name: "FK_ItemCart_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_ItemCart_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -239,7 +258,7 @@ namespace E_CommerceStore.Migrations
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Properties_PropertyCategories_ItemPropertyCategoryId",
                         column: x => x.ItemPropertyCategoryId,
@@ -260,14 +279,14 @@ namespace E_CommerceStore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ItemCart_ItemId",
+                table: "ItemCart",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_BrandId",
                 table: "Items",
                 column: "BrandId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_CartId",
-                table: "Items",
-                column: "CartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_ItemTypeId",
@@ -317,10 +336,16 @@ namespace E_CommerceStore.Migrations
                 name: "BrandsTypes");
 
             migrationBuilder.DropTable(
+                name: "ItemCart");
+
+            migrationBuilder.DropTable(
                 name: "Properties");
 
             migrationBuilder.DropTable(
                 name: "UsersOrders");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "PropertyCategories");
@@ -333,9 +358,6 @@ namespace E_CommerceStore.Migrations
 
             migrationBuilder.DropTable(
                 name: "Brands");
-
-            migrationBuilder.DropTable(
-                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Types");

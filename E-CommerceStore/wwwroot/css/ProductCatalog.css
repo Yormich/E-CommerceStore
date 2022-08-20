@@ -368,3 +368,40 @@ input.valid {
     bottom:0;
     right:0;
 }
+
+.cart-main-wrapper{
+    display:flex;
+    flex-direction:column;
+}
+
+
+.tableHeader{
+    white-space:nowrap;
+    text-align:center;
+}
+
+.no-items-inCart{
+    width:80%;
+    height:80%;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+.align-cItemImage-center{
+    display:block;
+    max-width:20%;
+    max-height:20%;
+    margin:auto;
+}
+
+.align-deleteButton-center{
+    display:block;
+    width:40%;
+    height:40%;
+    margin:auto;
+}
+
+.noclick{
+    pointer-events:none;
+}

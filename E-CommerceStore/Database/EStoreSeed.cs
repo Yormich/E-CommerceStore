@@ -57,6 +57,12 @@ namespace E_CommerceStore.Database
                 await context.ItemProperties.AddRangeAsync(MakeItemProperties());
                 await context.SaveChangesAsync();
             }
+            if(!context.itemCarts.Any())
+            {
+                Console.WriteLine("Adding associative table data(carts and items)");
+                await context.itemCarts.AddRangeAsync(MakeItemCarts());
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<ItemBrand> MakeItemBrands()
@@ -98,14 +104,14 @@ namespace E_CommerceStore.Database
         {
             return new List<Item>()
             {
-                new Item("iPhone 13 Pro",44999,1,1,1){ImageSource="IPhone13Pro.png"},
-                new Item("iPhone 11",21999,1,1,1){ImageSource="IPhone11.png" },
-                new Item("Powder Kiss Lipstick",800,2,2,2){ImageSource="MacKissLipstick.png"},
-                new Item("LustreGlass Sheer-Shine Lipstick",770,2,2,2){ImageSource="SheerLipstickMac.png" },
-                new Item("Cady dress with feathers",4200,3,3,3){ImageSource="CadyDressTest.png" },
-                new Item("Embroidered mesh dress",2800,3,3,3){ImageSource="MeshDressTest.png"},
-                new Item("Mac Opalescent Powder",582,2,4,3){ImageSource="MacOpalescentPowder.png" },
-                new Item("Galaxy S21",29399,4,1,1){ImageSource="Galaxy S21.png" }
+                new Item("iPhone 13 Pro", 44999, 1, 1, 1, 12){ImageSource="IPhone13Pro.png"},
+                new Item("iPhone 11", 21999, 1,1, 1, 9){ImageSource="IPhone11.png" },
+                new Item("Powder Kiss Lipstick", 800, 2, 2, 2, 24){ImageSource="MacKissLipstick.png"},
+                new Item("LustreGlass Sheer-Shine Lipstick", 770, 2, 2, 2, 6){ImageSource="SheerLipstickMac.png" },
+                new Item("Cady dress with feathers", 4200, 3, 3, 3, 8){ImageSource="CadyDressTest.png" },
+                new Item("Embroidered mesh dress",2800,3,3,3, 2){ImageSource="MeshDressTest.png"},
+                new Item("Mac Opalescent Powder",582,2,4,3, 9){ImageSource="MacOpalescentPowder.png" },
+                new Item("Galaxy S21",29399,4,1,1, 1){ImageSource="Galaxy S21.png" }
             };
         }
         
@@ -165,7 +171,9 @@ namespace E_CommerceStore.Database
                 new User("lanister2028@gmail.com","Dima2028",null,Role.Buyer)
                 { AccountImageSource= "Luntik.png"},
                 new User("difficultMail99@gmail.com","randomPass",null,Role.Buyer),
-                new User("basicMail14@gmail.com","asd12345678",null,Role.Buyer)
+                new User("basicMail14@gmail.com","asd12345678",null,Role.Buyer),
+                new User("margoLoh2004@gmail.com","Margo2",null, Role.Buyer)
+                {AccountImageSource = "OnlineLibrary.png" }
             };
         }
 
@@ -179,6 +187,19 @@ namespace E_CommerceStore.Database
                 new Cart(4),
                 new Cart(5),
                 new Cart(6),
+                new Cart(7)
+            };
+        }
+
+        private static IEnumerable<ItemCart> MakeItemCarts()
+        {
+            return new List<ItemCart>()
+            {
+                new ItemCart(4,1),
+                new ItemCart(8,4),
+                new ItemCart(1,4),
+                new ItemCart(3,3),
+                new ItemCart(1,7)
             };
         }
     }

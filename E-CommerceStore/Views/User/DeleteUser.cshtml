@@ -1,0 +1,27 @@
+﻿@model int 
+
+@{
+    string? errorMessage = TempData["Password"] as string;
+}
+
+<div class="delete-userpage-form-wrapper">
+    <form method="post" asp-action="Delete" asp-controller="User" asp-route-Id="@Model">
+        <legend>
+            Are You Sure?
+        </legend>
+        <fieldset>
+            <label for="Password" class="form-label mt-4">Enter your Password to proceed</label>
+                       <input for="Password" name="Password" type="password" class="form-control" 
+                            placeholder="Password">
+                @if (!String.IsNullOrEmpty(errorMessage))
+                {
+                   <span class="field-validation-error">@errorMessage</span>
+                }
+            <input type="submit" class="btn btn-danger" 
+            style="margin-top:1%;margin-bottom:2%;margin-right:3%;;float:right" value="Delete" />
+        </fieldset>
+    </form>
+</div>
+ 
+@section Footer{
+}

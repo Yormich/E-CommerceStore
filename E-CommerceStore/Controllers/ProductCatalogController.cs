@@ -9,9 +9,18 @@ namespace E_CommerceStore.Controllers
    // [Route("")]
     public class ProductCatalogController : Controller
     {
-       // [HttpGet("")]
+        private readonly EStoreContext db;
+
+        public ProductCatalogController(EStoreContext db)
+        {
+            this.db = db;
+        }
+
+
+
+        // [HttpGet("")]
         [HttpGet("Products")]
-        public async Task<ViewResult> Index([FromServices] EStoreContext db,
+        public async Task<ViewResult> Index(
             [FromServices] ProductCatalogModel viewModel)
         {
             await EStoreSeed.PlantSeed(db);
@@ -27,7 +36,7 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpPost("Products/{typeId:int:min(0)}/{brandId?}")]
-        public ViewResult PostIndex([FromServices] EStoreContext db,
+        public ViewResult PostIndex(
             [FromServices] ProductCatalogModel viewModel,int typeId, int? brandId)
         {
             if (typeId != 0)
@@ -42,7 +51,7 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpGet("ProductPage/{itemId:int:min(1)}")]
-        public ViewResult ProductPage([FromServices] EStoreContext db,int itemId)
+        public ViewResult ProductPage(int itemId)
         {
             Item item = db.Items.Where(item => item.Id == itemId)
                 .Include(item => item.ItemType)
