@@ -35,7 +35,8 @@
                 <a href="user-Account" class="link-button">Personal Info</a>
             </li>
             <li class="list-group-item list-group-item-action">
-                <a asp-action="Index" asp-controller="Order" class="link-button">Order History</a>
+                <a asp-action="Index" asp-controller="Order" asp-route-userId="@Model.Id" 
+                    class="link-button">Order History</a>
             </li>
         </ul>
     </div>

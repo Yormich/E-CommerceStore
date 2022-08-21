@@ -405,3 +405,13 @@ input.valid {
 .noclick{
     pointer-events:none;
 }
+
+.order-entries-wrapper{
+    width:85%;
+}
+
+.orders-history-wrapper{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+}

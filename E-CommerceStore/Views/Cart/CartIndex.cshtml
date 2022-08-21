@@ -2,6 +2,16 @@
 
 @inject ItemImagePathProvider itemImageProvider
 
+@{
+    int userId = 0;
+    foreach(Claim claim in User.Claims)
+    {
+        if(claim.Type == "Id")
+        {
+            userId = Int32.Parse(claim.Value);   
+        }
+    }
+}   
 
 <div>
     <div class="cart-main-wrapper">
@@ -43,7 +53,8 @@
                                     <span style="color:black">Delete</span>
                                     <img src="~/StaticImages/Trash.svg">
                                 </a>
-                                <a asp-action="ConfirmItemOrder" asp-controller="Order" asp-route-itemId="@item.Id"
+                                <a asp-action="ConfirmItemOrder" asp-controller="Order"
+                                    asp-route-userId="@userId" asp-route-itemId="@item.Id"
                                     class="btn btn-success">
                                     Make Order
                                     <img src="~/StaticImages/Check.svg">
@@ -54,7 +65,7 @@
                 </tbody>
             </table>
             <a asp-action="ConfirmFromCart" asp-controller="Order" class="btn btn-success" 
-                style="float:right;width:20%;">
+                style="float:right;width:20%;" asp-route-userId="@userId">
                     Confirm Order
             </a>
         }

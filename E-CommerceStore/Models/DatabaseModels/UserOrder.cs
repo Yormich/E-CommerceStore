@@ -7,5 +7,11 @@
 
         public int OrderId { get; set; }
         public Order? Order { get; set; }
+
+        public UserOrder(int userId, int orderId)
+        {
+            UserId = userId;
+            OrderId = orderId;
+        }
     }
 }

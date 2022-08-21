@@ -131,9 +131,13 @@ namespace E_CommerceStore.Controllers
                 TempData["Password"] = "Wrong Password";
                 return View("DeleteUser", id);
             }
+            Cart cart = await db.Carts.FirstAsync(cart => cart.Id == id);
+            var ItemCarts = db.itemCarts.Where(ic => ic.CartId == cart.Id);
+            db.itemCarts.RemoveRange(ItemCarts);
+            db.Carts.Remove(cart);
             db.Users.Remove(user);
-
             await db.SaveChangesAsync();
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Login","User");
@@ -150,6 +154,11 @@ namespace E_CommerceStore.Controllers
         {
             User user = await GetUserByClaimId();
 
+            if (file == null)
+            {
+                ModelState.AddModelError("AccountImageSource", "File wasnt chosen");
+                return View("UserProfile", user);
+            }
             string pngFormatRegex = ".png$|.jpg$";
             const int ThreeMegaBytes = 3 * 1024 * 1024;
             Regex regex = new Regex(pngFormatRegex);
@@ -161,6 +170,7 @@ namespace E_CommerceStore.Controllers
             else if (file.Length > ThreeMegaBytes)
             {
                 ModelState.AddModelError("AccountImageSource", "File size is bigger than 3Mb");
+                return View("UserProfile", user);
             }
             user.AccountImageSource = file.FileName;
             await db.SaveChangesAsync();
@@ -172,7 +182,7 @@ namespace E_CommerceStore.Controllers
             {
                 await file.CopyToAsync(fileStream);
             }
-            UpdateClaimValues(new Dictionary<string, string>()
+            await UpdateClaimValues(new Dictionary<string, string>()
             {
                 {"ImageSource",$"{file.FileName}" }
             });
@@ -212,7 +222,7 @@ namespace E_CommerceStore.Controllers
                 user.Password = newPassword;
                 await db.SaveChangesAsync();
                 updatedClaims.Add("Password", user.Password);
-                UpdateClaimValues(updatedClaims);
+                await UpdateClaimValues(updatedClaims);
 
             }
             return View("UserProfile", user);
@@ -264,7 +274,7 @@ namespace E_CommerceStore.Controllers
             return await db.Users.FirstAsync(user => user.Id == UserId);
         }
 
-        private void UpdateClaimValues(Dictionary<string,string> NameValue)
+        private async Task UpdateClaimValues(Dictionary<string,string> NameValue)
         {
             var user = User;
             if (user == null)
@@ -282,6 +292,20 @@ namespace E_CommerceStore.Controllers
 
                 identity.AddClaim(new Claim(pair.Key, pair.Value));
             }
+            var claims = identity.Claims;
+
+            await HardClaimRewrite(claims); 
+        }
+
+
+        private async Task HardClaimRewrite(IEnumerable<Claim> claims)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsIdentity dentity = new ClaimsIdentity(claims,
+                  CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsPrincipal principal = new ClaimsPrincipal(dentity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                principal);
         }
     }
 }

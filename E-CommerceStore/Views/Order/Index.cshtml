@@ -1,11 +1,16 @@
 ﻿@model IEnumerable<Order> 
 
+@inject ItemImagePathProvider itemImageProvider
+
+@{
+    int OrderNumber = 1;
+}
 
 <div class="orders-history-wrapper">
     <div class="categories-list-wrapper">
         <ul class="list-group">
             <li class="list-group-item list-group-item-action">
-                <a href="user-Account" class="link-button">Personal Info</a>
+                <a asp-action="Account" asp-controller="User" class="link-button">Personal Info</a>
             </li>
             <li class="list-group-item list-group-item-action">
                 <a asp-action="Index" asp-controller="Order" class="link-button">Order History</a>
@@ -15,16 +20,55 @@
     <div class="order-entries-wrapper">
         @if(Model.Count() != 0)
         {
-            foreach(Order order in Model)
-            {
-                <h1>@order.Id</h1>
-                <h2>@order.ItemId</h2>
-            }
+            <table class="table table-bordered table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col" class="tableHeader">Order Number</th>
+                        <th scope="col" class="tableHeader">Seller Id</th>
+                        <th scope="col" class="tableHeader">Product Image</th>
+                        <th scope="col" class="tableHeader">Name and Price</th>
+                        <th scope="col" class="tableHeader">Order Creation Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(Order order in Model)
+                    {
+                        <tr class="table-active">
+                            <td scope="row"
+                                style="font-size:1.8em;width:5%;text-align:center;vertical-align:middle;">
+                                    @(OrderNumber++)
+                            </td>
+                            <td class="table-active"  style="font-size:1.3em;text-align:center;vertical-align:middle;">
+                                @order.Item.SellerId
+                            </td>
+                            <td class="table-active">
+                                <div>
+                                    <img src="@itemImageProvider.GetImagePath(Context,order.Item.ImageSource)"
+                                        class="align-cItemImage-center">
+                                </div>
+                            </td>
+                            <td class="table-active"
+                                style="font-size:1.3em;text-align:center;vertical-align:middle;">
+                                <p>
+                                    @order.Item.Name
+                                </p>
+                                <p>
+                                    @order.Item.Price ₴
+                                </p>
+                            </td>
+                            <td class="table-active"
+                                style="text-align:center;vertical-align:middle;">
+                                    @order.CreatedDate;
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
         else
         {
             <div class="no-orders-message">
-                No Orders yet :(
+                <h1 style="text-align:center;">No orders yet</h1>
             </div>
         }
     </div>
