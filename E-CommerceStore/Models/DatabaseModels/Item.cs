@@ -23,9 +23,9 @@
         public List<ItemProperty> PersonalProperties { get; set; } = null!;
 
         public List<Cart> Carts { get; set; } = null!;
-        public int Amount { get; set; } 
+        public int Amount { get; set; }
 
-        public Order? Order { get; set; }
+        public List<Order> Orders { get; set; } = null!;
 
         public Item(string Name, decimal Price, int BrandId, int TypeId, int SellerId, int Amount = 1)
         {

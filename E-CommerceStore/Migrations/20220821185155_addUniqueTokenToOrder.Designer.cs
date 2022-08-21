@@ -4,6 +4,7 @@ using E_CommerceStore.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceStore.Migrations
 {
     [DbContext(typeof(EStoreContext))]
-    partial class EStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220821185155_addUniqueTokenToOrder")]
+    partial class addUniqueTokenToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,7 +254,8 @@ namespace E_CommerceStore.Migrations
 
                     b.HasAlternateKey("UniqueToken");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ItemId")
+                        .IsUnique();
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -431,8 +434,8 @@ namespace E_CommerceStore.Migrations
             modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.Order", b =>
                 {
                     b.HasOne("E_CommerceStore.Models.DatabaseModels.Item", "Item")
-                        .WithMany("Orders")
-                        .HasForeignKey("ItemId")
+                        .WithOne("Order")
+                        .HasForeignKey("E_CommerceStore.Models.DatabaseModels.Order", "ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -462,7 +465,7 @@ namespace E_CommerceStore.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("Orders");
+                    b.Navigation("Order");
 
                     b.Navigation("PersonalProperties");
                 });

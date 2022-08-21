@@ -182,10 +182,11 @@ namespace E_CommerceStore.Database
             ordersBuilder.ToTable("Orders");
 
             ordersBuilder.HasKey(o => o.Id);
+            ordersBuilder.HasAlternateKey(o => o.UniqueToken);
 
             ordersBuilder.HasOne(o => o.Item)
-                .WithOne(i => i.Order)
-                .HasForeignKey<Order>(o => o.ItemId);
+                .WithMany(i => i.Orders)
+                .HasForeignKey(o => o.ItemId);
         }
 
         private void ConfigureCart(EntityTypeBuilder<Cart> cartBuilder)
