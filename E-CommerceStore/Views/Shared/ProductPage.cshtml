@@ -35,17 +35,36 @@
         </product-page>
         @if(!IsInUsersCart(Model.Id))
         {
-            <a asp-action="AddItem" asp-controller="Cart" style="margin-top:5%;" class="btn btn-success"
-                asp-route-itemId="@Model.Id">
-                Add to cart
-            </a>   
+            if(Model.Amount != 0)
+            {
+                <div class="amount-wrapper">
+                    <a asp-action="AddItem" asp-controller="Cart" style="margin-top:1%;width:20%;"
+                        class="btn btn-success"
+                        asp-route-itemId="@Model.Id">
+                        Add to cart
+                    </a>
+                    <small class="form-text text-muted">
+                        Total products left: @Model.Amount
+                    </small>
+                </div>
+            }
+            else
+            {
+                <a asp-action="AddItem" asp-controller="Cart" style="margin-top:1%;width:20%;" class="btn btn-dark noclick"
+                    asp-route-itemId="@Model.Id">
+                    Not available
+                </a>      
+            }
+
         }
         else
         {
-            <a asp-action="AddItem" asp-controller="Cart" style="margin-top:5%;" class="btn btn-dark noclick"
-                asp-route-itemId="@Model.Id">
-                Already in cart
-            </a>   
+            <div>
+                <a asp-action="AddItem" asp-controller="Cart" style="margin-top:1%;width:20%;" class="btn btn-dark noclick"
+                    asp-route-itemId="@Model.Id">
+                    Already in cart
+                </a>   
+            </div>
         }
     </div>
 </div>

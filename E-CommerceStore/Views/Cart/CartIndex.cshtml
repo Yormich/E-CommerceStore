@@ -53,12 +53,27 @@
                                     <span style="color:black">Delete</span>
                                     <img src="~/StaticImages/Trash.svg">
                                 </a>
-                                <a asp-action="ConfirmItemOrder" asp-controller="Order"
-                                    asp-route-userId="@userId" asp-route-itemId="@item.Id"
-                                    class="btn btn-success">
-                                    Make Order
-                                    <img src="~/StaticImages/Check.svg">
-                                </a>
+                                @if(item.Amount >= 1)
+                                {
+                                    <a asp-action="ConfirmItemOrder" asp-controller="Order"
+                                        asp-route-userId="@userId" asp-route-itemId="@item.Id"
+                                        class="btn btn-success">
+                                        Make Order
+                                        <img src="~/StaticImages/Check.svg">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-action="ConfirmItemOrder" asp-controller="Order"
+                                        asp-route-userId="@userId" asp-route-itemId="@item.Id"
+                                        class="btn btn-success noclick">
+                                        Make Order
+                                        <img src="~/StaticImages/Check.svg">
+                                    </a>    
+                                       <small class="form-text text-muted">
+                                            Not available at the moment
+                                        </small>
+                                }
                             </td>
                         </tr>    
                     }

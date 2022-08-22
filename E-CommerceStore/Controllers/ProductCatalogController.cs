@@ -24,7 +24,6 @@ namespace E_CommerceStore.Controllers
             [FromServices] ProductCatalogModel viewModel)
         {
             await EStoreSeed.PlantSeed(db);
-
             viewModel.ResultItems = db.Items;
             return View("Index",viewModel);
         }

@@ -88,7 +88,7 @@ namespace E_CommerceStore.TagHelpers
                 $"{parentTypeId}|{brand.Id}'> <button type='submit' " +
                 $"name='submit_param{parentTypeId}|{brand.Id}' value='submit_value" +
                 $"{parentTypeId}|{brand.Id}' class='link-button'>" +
-                $"{brand.Name}</button></form>");
+                $"{brand.Name} ({brand.BrandItems.Count(i=>i.ItemTypeId == parentTypeId)})</button></form>");
 
             brandItem.Attributes.Add("class", "list-group-item list-group-item-action bg-silver-sand");
 

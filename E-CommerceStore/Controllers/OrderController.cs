@@ -35,24 +35,32 @@ namespace E_CommerceStore.Controllers
         public async Task<IActionResult> ConfirmItemOrder(int userId,int itemId)
         {
             Item item = await db.Items.Where(item => item.Id == itemId).FirstAsync();
-            Order order = new Order(item.Id, DateTime.Now,Guid.NewGuid().ToString());
-            await db.Orders.AddAsync(order);
-            await db.SaveChangesAsync();
-
-            Order createdOrder = await db.Orders.FirstAsync(o => o.UniqueToken == order.UniqueToken);
-
-            List<UserOrder> userOrders = new List<UserOrder>()
+            if(item.Amount>=1)
             {
-                new UserOrder(userId,createdOrder.Id),
-                new UserOrder(item.SellerId,createdOrder.Id),
-            };
+                item.Amount--;
+                Order order = new Order(item.Id, DateTime.Now, Guid.NewGuid().ToString());
+                await db.Orders.AddAsync(order);
+                await db.SaveChangesAsync();
 
-            await db.UserOrders.AddRangeAsync(userOrders);
+                Order createdOrder = await db.Orders.FirstAsync(o => o.UniqueToken == order.UniqueToken);
 
-            ItemCart ic = await db.itemCarts.Where(ic => (ic.CartId == userId && ic.ItemId == itemId))
-                .FirstAsync();
-            db.itemCarts.Remove(ic);
-            await db.SaveChangesAsync();
+                List<UserOrder> userOrders = new List<UserOrder>()
+                {
+                     new UserOrder(userId,createdOrder.Id),
+                     new UserOrder(item.SellerId,createdOrder.Id),
+                };
+
+                await db.UserOrders.AddRangeAsync(userOrders);
+
+                ItemCart ic = await db.itemCarts.Where(ic => (ic.CartId == userId && ic.ItemId == itemId))
+                    .FirstAsync();
+                db.itemCarts.Remove(ic);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                return NotFound();
+            }
             return RedirectToAction("CartPage", "Cart");
         }
 
@@ -62,7 +70,8 @@ namespace E_CommerceStore.Controllers
             var items = db.Carts.Where(cart => cart.Id == userId)
                 .Include(cart => cart.Items)
                 .FirstAsync().Result.Items;
-           //add orders
+            items = items.Where(i => i.Amount >= 1).ToList();
+            items.ForEach(i => i.Amount--);
             List<Order> orders = new List<Order>();
             List<int> itemsIds = new List<int>();
             items.ForEach(i => itemsIds.Add(i.Id));

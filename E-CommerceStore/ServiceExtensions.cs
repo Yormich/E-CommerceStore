@@ -31,7 +31,8 @@ namespace E_CommerceStore
                 optionsBuilder.UseSqlServer(EStoreContext.MakeConnectionString(
                 Directory.GetCurrentDirectory(), "appDbConfig.json")).Options);
 
-            implementation = new ProductCatalogModel(db.ItemTypes.Include(type => type.Brands));
+            implementation = new ProductCatalogModel(db.ItemTypes.Include(type => type.Brands)
+                .ThenInclude(brand=>brand.BrandItems));
     
             services.AddSingleton<ProductCatalogModel>(implementation);
 

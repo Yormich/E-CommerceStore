@@ -36,6 +36,12 @@
     width: 85%;
 }
 
+.amount-wrapper{
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+}
+
 
 .bg-silver-sand {
     background-color: red;
