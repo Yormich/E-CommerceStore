@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Authorization;
 using E_CommerceStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using E_CommerceStore.Utilities;
 
 namespace E_CommerceStore.Controllers
 {
     public class UserController : Controller
     {
         private readonly EStoreContext db;
+        private readonly IUserClaimsManager claimsManager;
 
-        public UserController(EStoreContext db)
+        public UserController(EStoreContext db, IUserClaimsManager claimsManager)
         {
             this.db = db;
+            this.claimsManager = claimsManager;
         }
 
 
@@ -133,7 +136,9 @@ namespace E_CommerceStore.Controllers
             }
             Cart cart = await db.Carts.FirstAsync(cart => cart.Id == id);
             var ItemCarts = db.itemCarts.Where(ic => ic.CartId == cart.Id);
+            var UserOrders = db.UserOrders.Where(uo => uo.UserId == id);
             db.itemCarts.RemoveRange(ItemCarts);
+            db.UserOrders.RemoveRange(UserOrders);
             db.Carts.Remove(cart);
             db.Users.Remove(user);
             await db.SaveChangesAsync();
@@ -182,10 +187,16 @@ namespace E_CommerceStore.Controllers
             {
                 await file.CopyToAsync(fileStream);
             }
-            await UpdateClaimValues(new Dictionary<string, string>()
+
+            Dictionary<string, string> newClaims = new Dictionary<string, string>()
             {
                 {"ImageSource",$"{file.FileName}" }
-            });
+            };
+            foreach(KeyValuePair<string,string> pair in newClaims)
+            {
+                claimsManager.TryReplaceClaim(pair.Key, pair.Value);
+            }
+            await HardClaimRewrite(claimsManager.GetClaims());
 
             return View("UserProfile", user);
         }
@@ -222,8 +233,11 @@ namespace E_CommerceStore.Controllers
                 user.Password = newPassword;
                 await db.SaveChangesAsync();
                 updatedClaims.Add("Password", user.Password);
-                await UpdateClaimValues(updatedClaims);
-
+                foreach(KeyValuePair<string,string> pair in updatedClaims)
+                {
+                    claimsManager.TryReplaceClaim(pair.Key, pair.Value);
+                }
+                await HardClaimRewrite(claimsManager.GetClaims());
             }
             return View("UserProfile", user);
         }
@@ -260,44 +274,7 @@ namespace E_CommerceStore.Controllers
             }
             return View("UserProfile",user);
         }
-        private async Task<User> GetUserByClaimId()
-        {
-            int UserId = 0;
-            foreach (Claim claim in User.Claims)
-            {
-                if (claim.Type == "Id")
-                {
-                    UserId = Int32.Parse(claim.Value);
-                }
-            }
-
-            return await db.Users.FirstAsync(user => user.Id == UserId);
-        }
-
-        private async Task UpdateClaimValues(Dictionary<string,string> NameValue)
-        {
-            var user = User;
-            if (user == null)
-                return;
-               
-            var identity = user.Identity as ClaimsIdentity;
-            if (identity == null)
-                return;
-                
-            foreach (KeyValuePair<string, string> pair in NameValue)
-            {
-                var possibleClaim = identity.FindFirst(pair.Key);
-                if (possibleClaim != null)
-                    identity.RemoveClaim(possibleClaim);
-
-                identity.AddClaim(new Claim(pair.Key, pair.Value));
-            }
-            var claims = identity.Claims;
-
-            await HardClaimRewrite(claims); 
-        }
-
-
+        
         private async Task HardClaimRewrite(IEnumerable<Claim> claims)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -307,5 +284,15 @@ namespace E_CommerceStore.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
         }
+
+        private async Task<User> GetUserByClaimId()
+        {
+            int UserId;
+            if (!Int32.TryParse(claimsManager.TryGetClaimValue("Id"), out UserId))
+                throw new ArgumentNullException("UserId is null");
+
+            User user = await db.Users.FirstAsync(u => u.Id == UserId);
+            return user;
+        } 
     }
 }

@@ -1,0 +1,70 @@
+﻿@model Item
+@inject ItemImagePathProvider imageProvider
+
+
+<div class="item-form-wrapper">
+    <div>
+        <form asp-action="UpdateItem" asp-controller="ItemManager" asp-antiforgery="true"
+            enctype="multipart/form-data">
+            <legend></legend>
+            <fieldset>
+                <p>
+                    <input asp-for="Id" name="Id"  type="hidden" />
+                </p>
+                <p>
+                    <label asp-for="Name" class="form-label mt-4">Name</label>
+                    <input asp-for="Name" name="Name" class="form-control" />
+                    <span asp-validation-for="Name"></span>
+                </p>
+                <p>
+                    <label asp-for="Price" class="form-label mt-4">Price</label>
+                    <input asp-for="Price" name="Price" class="form-control"/>
+                    <span asp-validation-for="Price"></span>
+                </p>
+                <p>
+                    <label asp-for="Amount" class="form-label mt-4">Amount</label>
+                    <input asp-for="Amount" name="Amount" type="range" 
+                        min="1" max="100" step="1" class="form-range" oninput="this.nextElementSibling.value = this.value"
+                            value="1"/>
+                     <output>1</output>
+                    <span asp-validation-for="Amount"></span>
+                </p>
+                <p>
+                    <h3>Image</h3>
+                    <div class="user-profile-image-cont">
+                        <img src="@imageProvider.GetImagePath(Context,Model.ImageSource)" 
+                            class="user-profile-image" style="display:block;margin:auto;"/>
+                    </div>
+                    <label asp-for="ImageSource" class="form-label mt-4">Image Source</label>
+                    <input asp-for="ImageSource" name="Image" class="form-control"
+                        type="file" 
+                        placeholder="@Model.ImageSource"/>
+                       <small id="formFile" class="form-text text-muted">
+                           Image size should be below 3Mb.
+                           Supportable Formats: .jpg, .png
+                       </small>
+                    <span asp-validation-for="ImageSource"></span>
+                </p>
+                <p>
+                    <input type="submit" class="btn btn-dark" style="margin-top:1%;" value="Submit Changes"/>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+    @*<div>
+        <form asp-action="UpdateProductImage" asp-controller="ItemManager" enctype="multipart/form-data">
+
+        </form>
+    </div>*@
+</div>
+
+
+@section Footer{
+     <div class="footer-basic">
+        <div class="social">
+            <a href="https://www.instagram.com/rodgerburns/"><img src="~/StaticImages/instagramRef.png" class="social-img"/></a>
+            <a href="https://github.com/Yormich"><img src="~/StaticImages/gitHubRef.png" class="social-img"/></a>
+        </div>
+        <p class="copyright">E-Commerce Store © @DateTime.Now.Year</p>
+    </div>
+}

@@ -4,7 +4,7 @@
 @functions{
     bool IsInUsersCart(int itemId)
     {
-        if(User.Identity.IsAuthenticated)
+        if(User.Identity?.IsAuthenticated ?? false)
         {
             int UserId = 0;
             foreach(Claim claim in User.Claims)

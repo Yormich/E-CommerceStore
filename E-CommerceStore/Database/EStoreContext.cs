@@ -140,7 +140,10 @@ namespace E_CommerceStore.Database
             itemsBuilder.HasCheckConstraint("Name", "LEN(Name) > 5");
             itemsBuilder.HasCheckConstraint("Price", "Price > 0");
             itemsBuilder.Property(i => i.Price).HasColumnType("decimal");
+            itemsBuilder.Property(i => i.IsForSale).HasColumnType("BIT")
+                .HasDefaultValue("TRUE").HasColumnName("IsSaling");
 
+            
             itemsBuilder.HasOne(i => i.Brand)
                 .WithMany(b => b.BrandItems)
                 .HasForeignKey(i => i.BrandId);

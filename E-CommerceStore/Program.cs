@@ -23,7 +23,6 @@ app.Map("/", (HttpContext context) =>
     context.Response.Redirect("/Products",true);
 });
 
-
 app.MapControllerRoute(
     name: "main",
     pattern: "Products/{action=Index}",

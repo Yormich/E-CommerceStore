@@ -5,23 +5,30 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using E_CommerceStore.Models.DatabaseModels;
 using E_CommerceStore.Models.ViewModels;
+using E_CommerceStore.Utilities;
 
 namespace E_CommerceStore.Controllers
 {
     public class CartController : Controller
     {
         private readonly EStoreContext db;
+        private readonly IUserClaimsManager claimsManager;
 
-        public CartController(EStoreContext db)
+        public CartController(EStoreContext db, IUserClaimsManager claimsManager)
         {
             this.db = db;
+            this.claimsManager = claimsManager;
         }
 
         [Authorize]
         [HttpGet("Cart")]
         public async Task<IActionResult> CartPage()
         {
-            Cart cart = await GetCartWithItems(GetUserClaimId());
+            int UserId;
+            if (!Int32.TryParse(claimsManager.TryGetClaimValue("Id"), out UserId))
+                return NotFound();
+
+            Cart cart = await GetCartWithItems(UserId);
 
             return View("CartIndex",cart.Items);
         }
@@ -30,7 +37,11 @@ namespace E_CommerceStore.Controllers
         [HttpGet("Cart/Delete/{itemId:int}")]
         public async Task<IActionResult> DeleteFromCart(int itemId)
         {
-            Cart cart = await GetCartWithItems(GetUserClaimId());
+            int UserId;
+            if (!Int32.TryParse(claimsManager.TryGetClaimValue("Id"), out UserId))
+                return NotFound();
+
+            Cart cart = await GetCartWithItems(UserId);
             IQueryable<ItemCart> entriesToDelete = db.itemCarts.
                 Where(ic => ic.CartId == cart.Id && ic.ItemId == itemId);
             db.itemCarts.RemoveRange(entriesToDelete);
@@ -42,7 +53,10 @@ namespace E_CommerceStore.Controllers
         [HttpGet("Cart/Add/itemId:int")]
         public async Task<IActionResult> AddItem(int itemId)
         {
-            int OwnerId = GetUserClaimId();
+            int OwnerId;
+            if (!Int32.TryParse(claimsManager.TryGetClaimValue("Id"), out OwnerId))
+                return NotFound();
+
             Cart cart = await db.Carts.Where(cart => cart.Id == OwnerId)
                 .FirstAsync();
             await db.itemCarts.AddAsync(new ItemCart(itemId, cart.Id));
@@ -62,16 +76,6 @@ namespace E_CommerceStore.Controllers
                             .Include(cart => cart.Items).FirstAsync();
             Console.WriteLine($"Cart ID: {cart.Id}");
             return cart;
-        }
-
-        private int GetUserClaimId()
-        {
-            var identity = User.Identity as ClaimsIdentity;
-            Claim? id = identity?.Claims.FirstOrDefault(claim => claim.Type == "Id");
-            if (id == null)
-                return int.MaxValue;
-            Console.WriteLine($"User ID: {id.Value}");
-            return Int32.Parse(id.Value);
         }
     }
 }

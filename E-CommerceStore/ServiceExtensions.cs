@@ -3,6 +3,7 @@ using E_CommerceStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using E_CommerceStore.Utilities;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace E_CommerceStore
 {
@@ -35,10 +36,13 @@ namespace E_CommerceStore
                 .ThenInclude(brand=>brand.BrandItems));
     
             services.AddSingleton<ProductCatalogModel>(implementation);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<ItemImagePathProvider>();
 
             services.AddScoped<UserImagePathProvider>();
+
+            services.AddTransient<IUserClaimsManager, UserClaimManager>();
 
            // services.AddSingleton<IFileProvider>();
         }

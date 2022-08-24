@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Item>
+@inject ItemImagePathProvider imagePathProvider
+@inject IUserClaimsManager claimsManager
+
+@{
+    string? Email = claimsManager.TryGetClaimValue(ClaimTypes.Email);
+    int ItemNumber = 1;
+
+    int sellerId;
+    if (!Int32.TryParse(claimsManager.TryGetClaimValue("Id"), out sellerId))
+        sellerId = int.MaxValue;
+}
+
+
+
+<div class="item-manager-wrapper">
+    <div style="text-align:center;">
+        <h1>Welcome, @(Email ?? "Thats not supposed to be shown")</h1>
+    </div>
+    <div class="item-manager items wrapper">
+        <table  class="table table-bordered table-striped table-dark" style="width:90%;">
+            <thead>
+                <tr>
+                    <th scope="col" class="tableHeader">Item Number</th>
+                    <th scope="col" class="tableHeader">Name</th>
+                    <th scope="col" class="tableHeader">Image</th>
+                    <th scope="col" class="tableHeader">Status</th>
+                    <th scope="col" class="tableHeader">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+               @foreach(Item item in Model)
+               {
+                    <tr class="table-active">
+                        <td scope="row"
+                            style="font-size:1.8em;text-align:center;vertical-align:middle;">
+                            @(ItemNumber++)
+                        </td>
+                        <td
+                            style="font-size:1.5em;text-align:center;vertical-align:middle;">
+                            @item.Name
+                        </td>
+                        <td>
+                            <div>
+                                <img src="@imagePathProvider.GetImagePath(Context,item.ImageSource)"
+                                    class="align-cItemImage-center">
+                            </div>
+                        </td>
+                        <td
+                             style="font-size:1.8em;text-align:center;vertical-align:middle;">
+                             @( item.IsForSale ? "On Sale" : "Withdrawn from Sale")
+                        </td>
+                        <td>
+                            <a asp-action="DeleteConfirmation" asp-controller="ItemManager" asp-route-itemId="@item.Id"
+                                class="btn btn-danger">
+                                <span style="color:black">Delete</span>
+                                <img src="~/StaticImages/Trash.svg">
+                            </a>
+                            <a asp-action="ChangeSalingStatus" asp-controller="ItemManager" asp-route-itemId="@item.Id"
+                                class="btn btn-primary">
+                                @(item.IsForSale ? "Withdraw from sale" : "Put On Sale")
+                            </a>
+                            <a asp-action="ItemPropertiesForm" asp-controller="ItemManager" asp-route-itemId="@item.Id"
+                                class="btn btn-primary">
+                                Change main product properties
+                            </a>
+                        </td>
+                    </tr>
+               }
+            </tbody>
+        </table>
+        <a asp-action="AddNewItem" asp-controller="ItemManager" 
+            asp-route-sellerId="@sellerId" class="btn btn-success">
+            Add new product
+        </a>
+    </div>
+</div>
+
+
+@section Footer{
+     <div class="footer-basic">
+        <div class="social">
+            <a href="https://www.instagram.com/rodgerburns/"><img src="~/StaticImages/instagramRef.png" class="social-img"/></a>
+            <a href="https://github.com/Yormich"><img src="~/StaticImages/gitHubRef.png" class="social-img"/></a>
+        </div>
+        <p class="copyright">E-Commerce Store © @DateTime.Now.Year</p>
+    </div>
+}

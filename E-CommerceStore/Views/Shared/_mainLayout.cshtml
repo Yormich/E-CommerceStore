@@ -36,7 +36,7 @@
                     </li>
                   </ul>
                   <form class="d-flex">
-                      @if(User.Identity.IsAuthenticated)
+                      @if(User.Identity?.IsAuthenticated ?? false)
                       {
                         <div class="logout-button-wrapper">
                             <ul class="navbar-nav me-auto">
@@ -48,19 +48,19 @@
                             </ul>
                         </div>
                       }
-                    @if(User.Identity.IsAuthenticated)
+                    @if(User.Identity?.IsAuthenticated ?? false)
                       {
                           foreach(Claim claim in User.Claims)
                           {
                              if(claim.Type == ClaimTypes.Role && claim.Value == "Seller")
                             {
-                                <a asp-controller="ProductManager" asp-action="SellerAccount">
+                                <a asp-controller="ItemManager" asp-action="Index">
                                     <img class="img-user-prof" src="~/StaticImages/SellerToolbox.png" />
                                 </a>
                             }
                         }
                        }
-                    @if(User.Identity.IsAuthenticated)
+                    @if(User.Identity?.IsAuthenticated ?? false)
                     {
                         Claim? imageClaim = User.Claims.FirstOrDefault(
                             claim => claim.Type == "ImageSource");

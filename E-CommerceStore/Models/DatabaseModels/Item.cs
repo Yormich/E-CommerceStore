@@ -1,11 +1,19 @@
-﻿namespace E_CommerceStore.Models.DatabaseModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace E_CommerceStore.Models.DatabaseModels
 {
     public class Item
     {
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Name isn't set")]
+        [StringLength(50,ErrorMessage ="Name length should be between 3 and 50 characters",MinimumLength =3)]
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Set price to proceed")]
+        [RegularExpression(@"^[0-9$€ ]+$", ErrorMessage = "Wrong Price Format")]
         public decimal Price { get; set; }
+
         public string? ImageSource { get; set; } = string.Empty;
 
         public ItemBrand Brand { get; set; } = null!;
@@ -23,6 +31,8 @@
         public List<ItemProperty> PersonalProperties { get; set; } = null!;
 
         public List<Cart> Carts { get; set; } = null!;
+
+        [Required(ErrorMessage = "Product Amount is required")]
         public int Amount { get; set; }
 
         public List<Order> Orders { get; set; } = null!;
@@ -36,6 +46,8 @@
             this.SellerId = SellerId;
             this.Amount = Amount;
         }
+
+        public bool IsForSale { get; set; }
 
         protected Item() { }
     }
