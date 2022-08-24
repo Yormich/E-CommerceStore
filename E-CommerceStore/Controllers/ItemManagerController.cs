@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using E_CommerceStore.Models.DatabaseModels;
 using System.Text.RegularExpressions;
+using E_CommerceStore.Models.ViewModels;
 
 
 namespace E_CommerceStore.Controllers
@@ -126,9 +127,72 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpGet("AddNewItem/{sellerId:int}")]
-        public async Task<IActionResult> AddNewItem(int sellerId)
+        public IActionResult AddNewItem(int sellerId)
         {
-            return Ok();
+            var Brands = db.Brands;
+            var Types = db.ItemTypes;
+            ItemAddModel model = new ItemAddModel(Types,Brands,sellerId);
+            return View("ItemAdd",model);
+        }
+
+        [HttpPost("AddNewItem/Confirm/{sellerId:int}")]
+        public async Task<IActionResult> ConfirmAdding(Item itemToAdd,
+            [FromRoute]int sellerId,[FromForm]IFormFile? image)
+        {
+            Console.WriteLine($"Item Name: {itemToAdd.Name}; Item Brand Id {itemToAdd.BrandId}; Item Type: Id:" +
+                $"{itemToAdd.ItemTypeId}; Item Price: {itemToAdd.Price}");
+
+            var Brands = db.Brands;
+            var ItemTypes = db.ItemTypes;
+            ItemAddModel model = new ItemAddModel(ItemTypes, Brands, sellerId);
+            model.Item = itemToAdd;
+
+            if(ModelState.IsValid)
+            {
+                Item? possibleItem = await db.Items.FirstOrDefaultAsync(i => i.Name == itemToAdd.Name);
+
+                if (possibleItem != null)
+                {
+                    ModelState.AddModelError("Item.Name", "Product with current name already exists");
+                    return View("ItemAdd", model);
+                }
+
+                if (image != null)
+               {
+                    string filename = image.FileName;
+                    Regex formatRegex = new Regex(@"\.jpg$|\.png$");
+                    if(!formatRegex.IsMatch(filename))
+                    {
+                        ModelState.AddModelError("Item.ImageSource", "Wrong file format");
+                        return View("ItemAdd", model);
+                    }
+                    string imagePath = @"wwwroot\StaticImages\ProductImages";
+                    imagePath = Path.Combine(imagePath, filename);
+
+                    using (var fStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(fStream);
+                    }
+                    itemToAdd.ImageSource = filename;
+               }
+                await db.Items.AddAsync(itemToAdd);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                foreach(var item in ModelState)
+                {
+                    Console.WriteLine(item.Key + ": ");
+                    foreach(var error in item.Value.Errors)
+                    {
+                        Console.WriteLine(error.ErrorMessage);
+                    }
+                }
+                model.ErrorMessage = "Please try again";
+                return View("ItemAdd", model);
+            }
+
+            return RedirectToAction("Index", "ItemManager");
         }
     }
 }

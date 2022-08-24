@@ -428,3 +428,46 @@ input.valid {
     margin: auto;
     box-shadow: 0 0 10em 10em #666;
 }
+
+.main-itemAdd-wrapper {
+    width: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 10em 10em #666;
+    border-radius: 1.5em;
+    border-style: solid;
+    border-color: rgba(168,168,168,0.8);
+}
+
+.itemAdd-form-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: auto;
+    position: relative;
+}
+
+.itemAdd-form-element{
+    position:absolute;
+    width:50%;
+    left:10%;
+}
+
+.itemAdd-image-cont {
+    width: 90%;
+    align-self: flex-start;
+    height: 90%;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgba(168,168,168,0.8);
+    background-color: rgb(31, 28, 28);
+}
+
+.itemAdd-image{
+    display:block;
+    width:86%;
+    margin-left:7%;
+    margin-right:7%;
+    height:50%;
+    margin-top:auto;
+}

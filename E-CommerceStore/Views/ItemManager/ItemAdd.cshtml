@@ -1,0 +1,95 @@
+﻿@model ItemAddModel
+@inject ItemImagePathProvider imageProvider
+
+@{
+    SelectList brandsList = new SelectList(Model.AvailableBrands,"Id","Name");
+    SelectList typesList = new SelectList(Model.AvailableTypes,"Id","Name");
+    string? Error = Model.ErrorMessage;
+}
+
+<div class="main-itemAdd-wrapper">
+    <div class="itemAdd-form-wrapper">
+        <form asp-action="ConfirmAdding" asp-controller="ItemManager" 
+           asp-route-sellerId="@Model.SellerId" method="post" enctype="multipart/form-data">
+            <h3>Add New Product</h3>
+            @if(!String.IsNullOrEmpty(Error))
+            {
+                 <div class="alert alert-dismissible alert-danger">
+                    <h2><strong>Wrong Data!</strong></h2>
+                    <h3>@Error</h3>
+                </div>
+            }
+            <fieldset>
+                <legend>Main Properties</legend>
+                <input type="hidden" name="Id" asp-for="Item.Id"/>
+                <p>
+                    <label asp-for="Item.Name" class="form-label mt-4">Name</label>
+                    <input name="Name" asp-for="Item.Name" class="form-control"/>
+                    <span asp-validation-for="Item.Name"></span>
+                </p>
+                <p>
+                    <label asp-for="Item.Price" class="form-label mt-4">Price</label>
+                    <input name="Price" asp-for="Item.Price" type="number" step="1" class="form-control"/>
+                    <span asp-validation-for="Item.Price"></span>
+                    <small class="form-text text-muted">
+                        Price will be indicated in hryvnias
+                    </small>
+                </p>
+                <p>
+                    <label asp-for="Item.Amount" class="form-label mt-4">Amount</label>
+                     <input asp-for="Item.Amount" name="Amount" type="number" 
+                        min="1" max="100" step="1" class="form-control"
+                            value="@Model.Item.Amount"/> 
+                    <span asp-validation-for="Item.Amount"></span>
+
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Brand and Type configuration</legend>
+                <small class="form-text text-muted">
+                    If the lists do not contain the brand or type you need, 
+                    then you can add them in the product manager and then return to the form to proceed product adding.
+                </small>
+                <p>
+                    <label asp-for="Item.BrandId" class="form-label mt-4">Brand</label>
+                    <select asp-for="Item.BrandId" class="form-select" name="BrandId"
+                        asp-items="brandsList"></select>
+                    <span asp-validation-for="Item.BrandId"></span>
+                </p>
+                <p>
+                    <label asp-for="Item.ItemTypeId" class="form-label mt-4">Item Type</label>
+                    <select asp-for="Item.ItemTypeId" class="form-select" name="ItemTypeId"
+                        asp-items="typesList"></select>
+                    <span asp-validation-for="Item.ItemTypeId"></span>
+                </p>
+            </fieldset>
+                <p>
+                    <label asp-for="Item.SellerId" class="form-label mt-4">Seller Id</label>
+                    <input asp-for="Item.SellerId" name="SellerId" class="form-control" 
+                        readonly="readonly" value="@Model.SellerId" />
+                </p>
+            <fieldset>
+                <legend>Image configuration</legend>
+                <p>
+                    <label asp-for="Item.ImageSource" class="form-label mt-4">Image </label>
+                    <div class="itemAdd-image-cont">
+                        <img src="@imageProvider.GetImagePath(Context,Model.Item.ImageSource)"
+                            class="itemAdd-image"/>
+                    </div>
+                    <input type="file" name="image" class="form-control"/>
+                    <span asp-validation-for="Item.ImageSource"></span>
+                     <small class="form-text text-muted">
+                        Supportable formats: .png, .jpg
+                    </small>
+                </p>
+            </fieldset>
+                <p>
+                    <input type="submit" class="btn btn-dark" value="AddItem"/>
+                </p>
+        </form>
+    </div>
+
+</div>
+
+@section Footer{
+}

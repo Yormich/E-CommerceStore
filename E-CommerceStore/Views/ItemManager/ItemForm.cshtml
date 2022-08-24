@@ -23,10 +23,9 @@
                 </p>
                 <p>
                     <label asp-for="Amount" class="form-label mt-4">Amount</label>
-                    <input asp-for="Amount" name="Amount" type="range" 
-                        min="1" max="100" step="1" class="form-range" oninput="this.nextElementSibling.value = this.value"
-                            value="1"/>
-                     <output>1</output>
+                     <input asp-for="Amount" name="Amount" type="number" 
+                        min="1" max="100" step="1" class="form-control"
+                            value="@Model.Amount"/> 
                     <span asp-validation-for="Amount"></span>
                 </p>
                 <p>

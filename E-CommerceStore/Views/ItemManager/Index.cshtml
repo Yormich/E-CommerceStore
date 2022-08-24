@@ -52,17 +52,21 @@
                         </td>
                         <td>
                             <a asp-action="DeleteConfirmation" asp-controller="ItemManager" asp-route-itemId="@item.Id"
-                                class="btn btn-danger">
+                                class="btn btn-danger" style="margin:1%;">
                                 <span style="color:black">Delete</span>
                                 <img src="~/StaticImages/Trash.svg">
                             </a>
                             <a asp-action="ChangeSalingStatus" asp-controller="ItemManager" asp-route-itemId="@item.Id"
-                                class="btn btn-primary">
+                                class="btn btn-primary" style="margin:1%;">
                                 @(item.IsForSale ? "Withdraw from sale" : "Put On Sale")
                             </a>
                             <a asp-action="ItemPropertiesForm" asp-controller="ItemManager" asp-route-itemId="@item.Id"
-                                class="btn btn-primary">
+                                class="btn btn-primary" style="margin:1%;">
                                 Change main product properties
+                            </a>
+                            <a asp-action="" asp-controller="CategoryProperties" asp-route-itemId="@item.Id"
+                                class="btn btn-info" style="margin:1%;">
+                                Change Category Properties
                             </a>
                         </td>
                     </tr>
@@ -72,6 +76,12 @@
         <a asp-action="AddNewItem" asp-controller="ItemManager" 
             asp-route-sellerId="@sellerId" class="btn btn-success">
             Add new product
+        </a>
+        <a asp-action="" asp-controller="" class="">
+            Add new Brand
+        </a>
+        <a asp-action="" asp-controller="" class="">
+            Add new product Type
         </a>
     </div>
 </div>
