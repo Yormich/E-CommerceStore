@@ -1,0 +1,48 @@
+﻿@model ItemBrand
+@inject EStoreContext db
+
+@{
+    var ItemTypes = db.ItemTypes;
+    MultiSelectList itemTypesList = new MultiSelectList(ItemTypes, "Id", "Name");
+    string? Error = TempData["Error"] as string;
+}
+
+<div class="itemtype-form-wrapper">
+    <form method="post" asp-action="AddBrandConfirm" asp-controller="Brand">
+        <legend>
+            Product Brand Add Form
+        </legend>
+           @if(!String.IsNullOrEmpty(Error))
+           {
+                <div class="alert alert-dismissible alert-danger">
+                    <h3><strong>Error</strong></h3>
+                    <h5>@Error</h5>
+                </div>
+           }
+        <fieldset>
+            <p>
+               <input asp-for="Id" type="hidden" class="form-control" />
+            </p>
+            <p>
+                <label asp-for="Name" class="form-label mt-4">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Name" value="@Model.Name"/>
+                <small class="form-text text-muted">
+                    Name length should be unique, length should be between 3 and 50 characters.
+                </small>
+                <span asp-validation-for="Name"></span>
+            </p>
+            <p>
+                <label class="form-label mt-4" for="itemTypes">Product Types</label><br />
+                <select name="itemTypes" multiple= asp-items="itemTypesList"></select><br />
+                <small class="form-text text-muted">
+                    Please double check your selected product types before adding, 
+                    the option to change links between brands and product types will be added soon.
+                </small>
+            </p>
+        </fieldset>
+        <input type="submit" class="btn btn-primary" value="Add Product Brand" />
+    </form>
+</div>
+ 
+@section Footer{
+}

@@ -39,7 +39,7 @@ namespace E_CommerceStore.TagHelpers
 
             info.Attributes.Add("class", "product-props-wrapper");
 
-            info.InnerHtml.AppendHtml($"<h1><strong>{pageitem.ItemType.Name} {pageitem.Name}</strong></h1>");
+            info.InnerHtml.AppendHtml($"<h1><strong>{pageitem.ItemType.Name}: <br />{pageitem.Name}</strong></h1>");
 
    
 

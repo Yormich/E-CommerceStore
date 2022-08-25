@@ -64,9 +64,9 @@
                                 class="btn btn-primary" style="margin:1%;">
                                 Change main product properties
                             </a>
-                            <a asp-action="" asp-controller="CategoryProperties" asp-route-itemId="@item.Id"
-                                class="btn btn-info" style="margin:1%;">
-                                Change Category Properties
+                            <a asp-action="" asp-controller="" asp-route-item="@item.Id"
+                                class="btn btn-outline-primary" style="margin:1%;">
+                                Manage product properties
                             </a>
                         </td>
                     </tr>
@@ -77,10 +77,10 @@
             asp-route-sellerId="@sellerId" class="btn btn-success">
             Add new product
         </a>
-        <a asp-action="" asp-controller="" class="">
+        <a asp-action="AddBrand" asp-controller="Brand" class="btn btn-success">
             Add new Brand
         </a>
-        <a asp-action="" asp-controller="" class="">
+        <a asp-action="AddItemType" asp-controller="ItemType" class="btn btn-success">
             Add new product Type
         </a>
     </div>

@@ -471,3 +471,16 @@ input.valid {
     height:50%;
     margin-top:auto;
 }
+
+
+.itemtype-form-wrapper {
+    width: 30%;
+    height: 30%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.4em solid rgb(2, 2, 2);
+    border-radius: 0.3em;
+    box-shadow: 0 0 10em 10em #666;
+}

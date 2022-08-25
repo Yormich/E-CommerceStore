@@ -1,0 +1,27 @@
+﻿@model ItemType
+
+
+<div class="itemtype-form-wrapper">
+    <form method="post" asp-action="ConfirmItemTypeAdding" asp-controller="ItemType">
+        <legend>
+            Product Type Add Form
+        </legend>
+        <fieldset>
+            <p>
+               <input asp-for="Id" type="hidden" class="form-control" />
+            </p>
+            <p>
+                <label asp-for="Name" class="form-label mt-4">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Name" value="@Model.Name"/>
+                <small class="form-text text-muted">
+                    Name length should be unique, length should be between 3 and 50 characters.
+                </small>
+                <span asp-validation-for="Name"></span>
+            </p>
+        </fieldset>
+        <input type="submit" class="btn btn-primary" value="Add Product Type" />
+    </form>
+</div>
+ 
+@section Footer{
+}

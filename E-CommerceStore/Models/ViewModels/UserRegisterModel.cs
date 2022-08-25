@@ -9,16 +9,16 @@ namespace E_CommerceStore.Models.ViewModels
         public Role Role { get; set; }
 
         [EmailAddress(ErrorMessage = "Wrong Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = String.Empty;
 
         [Required(ErrorMessage = "Password is required")]
         [RegularExpression(@"(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,30}",
             ErrorMessage = "Wrong Password Format")]
-        public string Password { get; set; }
+        public string Password { get; set; } = String.Empty;
 
         [Required(ErrorMessage = "Repeat your Password")]
-        [Compare("Password",ErrorMessage ="Passwords don't match")]
-        public string RepeatedPassword { get; set; }
+        [Compare("Password", ErrorMessage = "Passwords don't match")]
+        public string RepeatedPassword { get; set; } = String.Empty;
 
         public UserRegisterModel(Role role, string email, string password, string repeatedPassword)
         {
