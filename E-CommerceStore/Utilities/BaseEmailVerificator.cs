@@ -8,27 +8,69 @@ namespace E_CommerceStore.Utilities
     public class BaseEmailVerificator : IEmailVerificator
    {
         //one code for each email
-        public Dictionary<string,string> EmailCode { get; set; }
+        protected Dictionary<string,string> EmailCode { get; set; }
         //and one timer for each code
-        public List<Timer> timers { get; set; }
+        protected Dictionary<string,Timer> timers { get; set; }
 
         private readonly long codeLifeLength;
 
         public BaseEmailVerificator(long codeLifeLength)
         {
             EmailCode = new Dictionary<string,string>();
-            timers = new List<Timer>();
+            timers = new Dictionary<string, Timer>();
             this.codeLifeLength = codeLifeLength;
         }
 
         public void SetCodeForEmail(string email)
         {
-            throw new NotImplementedException();
+            if(EmailCode.ContainsKey(email))
+            {
+                EmailCode[email] = IEmailVerificator.FormCode(6);
+                timers[email] = new Timer(ExpireCode,email,codeLifeLength,Timeout.Infinite);
+            }
+            else
+            {
+                EmailCode.Add(email, IEmailVerificator.FormCode(6));
+                timers.Add(email, new Timer(ExpireCode,email,codeLifeLength,Timeout.Infinite));
+            }
+        }
+        
+
+        public void ExpireCode(object? email)
+        {
+            if(email != null && email is string)
+            {
+                string key = (string)email;
+
+                if(EmailCode.ContainsKey(key) && timers.ContainsKey(key))
+                {
+                    EmailCode.Remove(key);
+                    timers.Remove(key);
+                }
+            }
         }
 
-        public void ExpireCode(object code)
+        public bool Verify(string email, string code)
         {
-            throw new NotImplementedException();
+            return EmailCode.ContainsKey(email) && code == EmailCode[email];
+        }
+
+        public string? GetCodeByEmail(string email)
+        {
+            if(EmailCode.ContainsKey(email))
+            {
+                return EmailCode[email];
+            }
+            return null;
+        }
+
+        public void EraseCode(string email)
+        {
+            if(EmailCode.ContainsKey(email) && timers.ContainsKey(email))
+            {
+                EmailCode.Remove(email);
+                timers.Remove(email);
+            }
         }
     }
 }

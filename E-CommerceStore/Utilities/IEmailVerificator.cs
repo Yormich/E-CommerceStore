@@ -9,6 +9,12 @@ namespace E_CommerceStore.Utilities
 
         public void ExpireCode(object code);
 
+        public string? GetCodeByEmail(string email);
+
+        public void EraseCode(string email);
+
+        public bool Verify(string email, string code);
+
         public static string FormCode(int length)
         {
             const string codeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

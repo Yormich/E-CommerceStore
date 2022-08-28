@@ -9,6 +9,8 @@ using E_CommerceStore.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using E_CommerceStore.Utilities;
+using System.Net.Mail;
+using System.Net;
 
 namespace E_CommerceStore.Controllers
 {
@@ -16,11 +18,12 @@ namespace E_CommerceStore.Controllers
     {
         private readonly EStoreContext db;
         private readonly IUserClaimsManager claimsManager;
-
-        public UserController(EStoreContext db, IUserClaimsManager claimsManager)
+        private readonly IEmailVerificator emailVerificator;
+        public UserController(EStoreContext db, IUserClaimsManager claimsManager,IEmailVerificator verificator)
         {
             this.db = db;
             this.claimsManager = claimsManager;
+            this.emailVerificator = verificator;
         }
 
 
@@ -55,23 +58,77 @@ namespace E_CommerceStore.Controllers
                     ModelState.AddModelError("Email", "Email already Exists");
                     return View("RegisterPage", model);
                 }
-                Console.WriteLine("Adding User");
+                emailVerificator.SetCodeForEmail(model.Email);
+                string? code = emailVerificator.GetCodeByEmail(model.Email);
+                if(code != null)
+                {
+                    const string senderAddress = "lanister2028@gmail.com";
+                    MailAddress from = new MailAddress(senderAddress, "Yormich");
+                    MailAddress to = new MailAddress(model.Email);
+                    MailMessage codeMessage = new MailMessage(from, to);
+                    codeMessage.Subject = "Your Verification code for E-Commerce Store";
+                    codeMessage.Body = $"Code: {code}";
+                    int startSplitPos = senderAddress.LastIndexOf('@');
+                    int lastSplitPos = senderAddress.LastIndexOf('.');
+                    string postalService = senderAddress.Substring(startSplitPos, lastSplitPos - startSplitPos);
+                    SmtpClient? smtp = null;
 
+                    switch (postalService)
+                    {
+                        case "@gmail":
+                            smtp = new SmtpClient("smtp.gmail.com", 587);
+                            smtp.EnableSsl = true;
+                            break;
+                        case "@mail":
+                            break;
+                        case "@yandex":
+                            break;
+                        default:
+                            ModelState.AddModelError("Email", "Sorry, but this format in't supported yet." +
+                                " Please try later or use mail from the list of supported: gmail, mail, yandex");
+                            return View("RegisterPage", model);
+                    }
+                    if(smtp!= null)
+                    {
+                        smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
+                        await smtp.SendMailAsync(codeMessage);
+                    }
+                    return View("VerifyRegisterData", model);
+                }
+            }
+
+            return View("RegisterPage", model);
+        }
+        [HttpPost("register/verify")]
+        public async Task<IActionResult> VerifyRegisterData(UserRegisterModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                string? validCode = emailVerificator.GetCodeByEmail(model.Email);
+                if (validCode == null)
+                {
+                    ModelState.AddModelError("VerificationCode", "Code expired, please enter a new one");
+                    return View("VerifyRegisterData", model);
+                }
+                else if (validCode != model.VerificationCode)
+                {
+                    ModelState.AddModelError("VerificationCode", "Wrong code, please try again");
+                    return View("VerifyRegisterData", model);
+                }
+                emailVerificator.EraseCode(model.Email);
+                Console.WriteLine("Adding User");
                 User user = new User(model.Email, model.Password, null, model.Role);
                 await db.Users.AddAsync(user);
                 await db.SaveChangesAsync();
-                Console.WriteLine("Adding cart");
 
+                Console.WriteLine("Adding cart");
                 int cartOwnerId = db.Users.Where(u => u.Email == user.Email).First().Id;
                 Cart cart = new Cart(cartOwnerId);
                 await db.Carts.AddAsync(cart);
                 await db.SaveChangesAsync();
                 Console.WriteLine("Registered Successfully!");
-
-                return RedirectToAction("Login", "User");
             }
-
-            return View("RegisterPage", model);
+            return RedirectToAction("Login", "User");
         }
 
         [HttpPost("login")]
@@ -94,6 +151,7 @@ namespace E_CommerceStore.Controllers
                 ClaimsPrincipal principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     principal);
+
                 return Redirect(ReturnUrl);
             }
             TempData["Error"] = "Email or Password is invalid";

@@ -33,8 +33,8 @@ namespace E_CommerceStore
                 Directory.GetCurrentDirectory(), "appDbConfig.json")).Options);
 
             implementation = new ProductCatalogModel(db.ItemTypes.Include(type => type.Brands)
-                .ThenInclude(brand=>brand.BrandItems));
-    
+                .ThenInclude(brand => brand.BrandItems));
+
             services.AddSingleton<ProductCatalogModel>(implementation);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -43,6 +43,11 @@ namespace E_CommerceStore
             services.AddScoped<UserImagePathProvider>();
 
             services.AddTransient<IUserClaimsManager, UserClaimManager>();
+
+            services.AddSingleton<IEmailVerificator, BaseEmailVerificator>((IServiceProvider provider) =>
+            {
+                return new BaseEmailVerificator(1_800_000);
+            });
 
            // services.AddSingleton<IFileProvider>();
         }

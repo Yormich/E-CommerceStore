@@ -1,0 +1,43 @@
+﻿@model UserRegisterModel
+
+<div class="add-category-form-wrapper">
+    <form asp-action="VerifyRegisterData" asp-controller="User">
+        <fieldset>
+            <legend>Verification</legend>
+            <p>
+                <input type="hidden" asp-for="Role" value="@Model.Role" />
+            </p>
+            <p>
+                <input type="hidden" asp-for="RepeatedPassword" value="@Model.RepeatedPassword"/>
+            </p>
+            <p>
+                <input type="hidden" asp-for="Password" value="@Model.Password" />
+            </p>
+            <p>
+                <input type="hidden" asp-for="Email" value="@Model.Email" />
+            </p>
+            <p>
+                <label for="VerificationCode">Your code</label>
+                <input name="VerificationCode" for="VerificationCode" class="form-control" type="text"/>
+                <small class="form-text text-muted">
+                    Code Format: Uppercase Letters and Numbers([A-Z0-9])
+                </small>
+                <span asp-validation-for="VerificationCode"></span>
+                <small class="form-text text-muted">
+                    We've sent a verification code which will be valid for 30 minutes
+                    to your email address.
+                    If you don't see the code, click on the button below
+                </small>
+            </p>
+        </fieldset>
+        <input type="submit" class="btn btn-dark" value="Verify"/>
+    </form>
+    <a asp-action="" asp-controller="User" class="btn-primary">
+        Send code again
+    </a>
+</div>
+
+
+@section Footer{
+
+}

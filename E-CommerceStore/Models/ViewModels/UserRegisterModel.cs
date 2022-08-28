@@ -20,6 +20,8 @@ namespace E_CommerceStore.Models.ViewModels
         [Compare("Password", ErrorMessage = "Passwords don't match")]
         public string RepeatedPassword { get; set; } = String.Empty;
 
+        public string? VerificationCode { get; set; } = String.Empty;
+
         public UserRegisterModel(Role role, string email, string password, string repeatedPassword)
         {
             Role = role;
