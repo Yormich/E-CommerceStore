@@ -1,0 +1,34 @@
+﻿@model ItemProperty
+
+<div class="add-category-form-wrapper">
+    <form asp-action="EditProperty" asp-controller="PropertyCategories"
+        asp-route-itemId="@ViewBag.itemId">
+        <legend>Edit Property Form</legend>
+        <fieldset>
+            <p>
+                <input asp-for="Id" type="hidden" />
+            </p>
+            <p>
+                <label asp-for="PropertyName" class="form-label mt-4">Property Name</label>
+                <input asp-for="PropertyName" placeholder="Name" class="form-control" value="@Model.PropertyName" />
+                <span asp-validation-for="PropertyName"></span>
+            </p>
+            <p>
+                <label asp-for="PropertyValue" class="form-label mt-4">Property Value</label>
+                <input asp-for="PropertyValue" placeholder="Name" class="form-control" value="@Model.PropertyValue" />
+                <span asp-validation-for="PropertyValue"></span>
+            </p>
+            <p>
+                <input asp-for="ItemId" type="hidden" />
+            </p>
+            <p>
+                <input asp-for="ItemPropertyCategoryId" type="hidden" />
+            </p>
+        </fieldset>
+        <input type="submit" class="btn btn-outline-primary" value="Confirm"/>
+    </form>
+</div>
+
+@section Footer{
+
+}

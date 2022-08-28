@@ -1,0 +1,28 @@
+﻿@model ItemPropertyCategory
+
+
+<div class="add-category-form-wrapper">
+    <form asp-action="ConfirmCategoryAdd" asp-controller="PropertyCategories" asp-route-itemId="@ViewBag.itemId">
+        <legend>Add Category Form</legend>
+        <fieldset>
+            <p>
+                <input asp-for="Id" type="hidden" />
+            </p>
+                <input asp-for="ItemTypeId" type="hidden" value="@Model.ItemTypeId"/>
+            <p>
+                <label asp-for="Name" class="form-label mt-4">Name</label>
+                <input asp-for="Name"  class="form-control" placeholder="Name" value="@Model.Name"/>
+                <span asp-validation-for="Name"></span>
+                <small class="form-text text-muted">Be careful! 
+                    Adding category to product will affect all products of the same type
+                </small>
+            </p>
+        </fieldset>
+        <input  type="submit" class="btn btn-dark" value="Add Category"/>
+    </form>
+</div>
+
+
+@section Footer{
+
+}

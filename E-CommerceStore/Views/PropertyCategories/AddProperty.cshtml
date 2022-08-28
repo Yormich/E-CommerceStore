@@ -1,0 +1,33 @@
+﻿@model ItemProperty 
+
+
+<div class="add-category-form-wrapper">
+    <form asp-action="AddPropertyConfirm" asp-controller="PropertyCategories">
+        <legend>Add Property Form</legend>
+        <fieldset>
+            <p>
+                <input asp-for="Id" type="hidden" />
+            </p>
+            <p>
+                <input asp-for="ItemPropertyCategoryId" type="hidden" />
+            </p>
+                <input asp-for="ItemId" type="hidden" value="@Model.ItemId"/>
+            <p>
+                <label asp-for="PropertyName" class="form-label mt-4">Property Name</label>
+                <input asp-for="PropertyName"  class="form-control" placeholder="Name" value="@Model.PropertyName"/>
+                <span asp-validation-for="PropertyName"></span>
+            </p>
+            <p>
+                <label asp-for="PropertyValue" class="form-label mt-4">Property Value</label>
+                <input asp-for="PropertyValue"  class="form-control" placeholder="Name" value="@Model.PropertyValue"/>
+                <span asp-validation-for="PropertyValue"></span>
+            </p>
+        </fieldset>
+        <input  type="submit" class="btn btn-dark" value="Add Property"/>
+    </form>
+</div>
+
+
+@section Footer{
+
+}

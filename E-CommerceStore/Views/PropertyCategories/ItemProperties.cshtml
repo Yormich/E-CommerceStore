@@ -1,0 +1,67 @@
+﻿@model PropertyCategoryModel
+
+
+
+<div class="item-props-main-wrapper">
+
+    @if(Model.Categories.Any())
+    {
+        @foreach(var ItemPropertyCategory in Model.Categories)
+        {
+            <h1>@ItemPropertyCategory.Name</h1>
+            foreach (var property in ItemPropertyCategory.CategoryProperties)
+            {
+                <h3>@property.PropertyName: @property.PropertyValue</h3>
+                <a asp-action="DeleteProperty" asp-controller="PropertyCategories" 
+                   asp-route-itemId="@Model.OwnerItem.Id" asp-route-propertyId="@property.Id"
+                    class="btn btn-danger">
+                    Delete
+                    <img src="~/StaticImages/Trash.svg">
+                </a>
+                <a asp-action="EditPropertyForm" asp-controller="PropertyCategories"
+                   asp-route-itemId="@Model.OwnerItem.Id" asp-route-propertyId="@property.Id"
+                        class="btn btn-outline-primary">
+                    Edit
+                   <img src="~/StaticImages/Edit.png" style="max-width:1em;max-height:1em;">
+                </a>
+            }
+            <br />
+            <a asp-action="AddProperty" asp-controller="PropertyCategories" class="btn btn-success"
+                asp-route-itemId="@Model.OwnerItem.Id" asp-route-categoryId="@ItemPropertyCategory.Id"
+                style="margin-top:2%;">
+                Add new Property
+            </a>
+            <hr class="bg-black border-2 border-top border-dark"/>
+            <a asp-action="DeleteCategory" asp-controller="PropertyCategories" asp-route-itemId="@Model.OwnerItem.Id" 
+                asp-route-categoryId="@ItemPropertyCategory.Id" class="btn btn-danger">
+                Delete Category
+            </a>
+            <a asp-action="EditCategoryForm" asp-controller="PropertyCategories" asp-route-itemId="@Model.OwnerItem.Id"
+                asp-route-categoryId="@ItemPropertyCategory.Id" class="btn btn-outline-primary">
+                Edit Category
+            </a>
+            <hr class="bg-black border-2 border-top border-dark"/>
+        }   
+     }
+    else
+    {
+        <h4>No product categories have been added to this type of product yet</h4>
+    }
+    <br />
+    <a asp-action="AddNewCategory" asp-controller="PropertyCategories" asp-route-typeId="@Model.OwnerItem.ItemTypeId"
+        asp-route-itemId="@Model.OwnerItem.Id" class="btn btn-primary">
+        Add New Category
+    </a>
+
+</div>
+
+
+@section Footer{
+     <div class="footer-basic">
+                <div class="social">
+                <a href="https://www.instagram.com/rodgerburns/"><img src="~/StaticImages/instagramRef.png" class="social-img"/></a>
+                <a href="https://github.com/Yormich"><img src="~/StaticImages/gitHubRef.png" class="social-img"/></a>
+                </div>
+                <p class="copyright">E-Commerce Store © @DateTime.Now.Year</p>
+    </div>
+}

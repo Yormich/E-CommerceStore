@@ -45,30 +45,37 @@ namespace E_CommerceStore.TagHelpers
 
             foreach (ItemPropertyCategory category in pageitem.ItemType.itemPropertyCategories)
             {
+                IEnumerable<ItemProperty> CategoryProperties = pageitem.PersonalProperties
+                    .Where(prop => prop.ItemPropertyCategoryId == category.Id);
                 TagBuilder categoryBuilder = new TagBuilder("p");
                 categoryBuilder.InnerHtml.AppendHtml($"<h3><strong>{category.Name}</strong></h3>");
 
                 TagBuilder propsList = new TagBuilder("dl");
 
-                IEnumerable<ItemProperty> CategoryProperties = pageitem.PersonalProperties
-                    .Where(prop => prop.ItemPropertyCategoryId == category.Id);
-
-                foreach (ItemProperty property in CategoryProperties)
+                if (CategoryProperties.Any())
                 {
-                    TagBuilder propName = new TagBuilder("dt");
-                    propName.Attributes.Add("class", "dt-custom");
-                    propName.InnerHtml.Append($"{property.PropertyName}");
-                    
-                    TagBuilder propValue = new TagBuilder("dd");
-                    propValue.InnerHtml.Append($"{property.PropertyValue}");
-                    
-                    propsList.InnerHtml.AppendHtml(propName);
-                    propsList.InnerHtml.AppendHtml(propValue);
+
+                    foreach (ItemProperty property in CategoryProperties)
+                    {
+                        TagBuilder propName = new TagBuilder("dt");
+                        propName.Attributes.Add("class", "dt-custom");
+                        propName.InnerHtml.Append($"{property.PropertyName}");
+
+                        TagBuilder propValue = new TagBuilder("dd");
+                        propValue.InnerHtml.Append($"{property.PropertyValue}");
+
+                        propsList.InnerHtml.AppendHtml(propName);
+                        propsList.InnerHtml.AppendHtml(propValue);
+                    }
+                    categoryBuilder.InnerHtml.AppendHtml(propsList);
                 }
-                categoryBuilder.InnerHtml.AppendHtml(propsList);
+                else
+                {
+                    categoryBuilder.InnerHtml.AppendHtml("<h5>Properties not set yet</h5>");
+                }
                 info.InnerHtml.AppendHtml(categoryBuilder);
             }
-            
+
             StringWriter sw = new StringWriter();
             info.WriteTo(sw, System.Text.Encodings.Web.HtmlEncoder.Default);
             return sw.ToString();
