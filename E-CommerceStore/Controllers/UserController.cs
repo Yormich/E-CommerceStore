@@ -59,30 +59,9 @@ namespace E_CommerceStore.Controllers
                     return View("RegisterPage", model);
                 }
                 emailVerificator.SetCodeForEmail(model.Email);
-<<<<<<< HEAD
-
                 await SendCode(model);
 
                 return View("VerifyRegisterData", model);
-=======
-                string? code = emailVerificator.GetCodeByEmail(model.Email);
-                if(code != null)
-                {
-                    const string senderAddress = "lanister2028@gmail.com";
-                    MailAddress from = new MailAddress(senderAddress, "Yormich");
-                    MailAddress to = new MailAddress(model.Email);
-                    MailMessage codeMessage = new MailMessage(from, to);
-                    codeMessage.Subject = "Your Verification code for E-Commerce Store";
-                    codeMessage.Body = $"Code: {code}";
-                 
-                    SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                    smtp.EnableSsl = true;
-                    smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
-                    await smtp.SendMailAsync(codeMessage);
-          
-                    return View("VerifyRegisterData", model);
-                }
->>>>>>> 5cbfe45fd54b6dac131662486e278b08cd69cc30
             }
 
             return View("RegisterPage", model);
