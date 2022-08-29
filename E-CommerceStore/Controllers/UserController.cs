@@ -68,31 +68,12 @@ namespace E_CommerceStore.Controllers
                     MailMessage codeMessage = new MailMessage(from, to);
                     codeMessage.Subject = "Your Verification code for E-Commerce Store";
                     codeMessage.Body = $"Code: {code}";
-                    int startSplitPos = senderAddress.LastIndexOf('@');
-                    int lastSplitPos = senderAddress.LastIndexOf('.');
-                    string postalService = senderAddress.Substring(startSplitPos, lastSplitPos - startSplitPos);
-                    SmtpClient? smtp = null;
-
-                    switch (postalService)
-                    {
-                        case "@gmail":
-                            smtp = new SmtpClient("smtp.gmail.com", 587);
-                            smtp.EnableSsl = true;
-                            break;
-                        case "@mail":
-                            break;
-                        case "@yandex":
-                            break;
-                        default:
-                            ModelState.AddModelError("Email", "Sorry, but this format in't supported yet." +
-                                " Please try later or use mail from the list of supported: gmail, mail, yandex");
-                            return View("RegisterPage", model);
-                    }
-                    if(smtp!= null)
-                    {
-                        smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
-                        await smtp.SendMailAsync(codeMessage);
-                    }
+                 
+                    SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                    smtp.EnableSsl = true;
+                    smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
+                    await smtp.SendMailAsync(codeMessage);
+          
                     return View("VerifyRegisterData", model);
                 }
             }
