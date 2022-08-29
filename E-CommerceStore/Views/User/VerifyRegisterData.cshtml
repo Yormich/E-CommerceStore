@@ -1,5 +1,11 @@
 ﻿@model UserRegisterModel
 
+
+@{
+    string Role = Model.Role.ToString();
+}
+
+
 <div class="add-category-form-wrapper">
     <form asp-action="VerifyRegisterData" asp-controller="User">
         <fieldset>
@@ -32,7 +38,10 @@
         </fieldset>
         <input type="submit" class="btn btn-dark" value="Verify"/>
     </form>
-    <a asp-action="" asp-controller="User" class="btn-primary">
+    <a asp-action="SendCode" asp-controller="User" class="btn btn-primary"
+        asp-all-route-data='new Dictionary<string,string>{{"Role",Role},{"Email",Model.Email},
+            {"Password",Model.Password},{"RepeatedPassword",Model.RepeatedPassword},
+            {"VerificationCode",Model.VerificationCode ?? String.Empty}}'>
         Send code again
     </a>
 </div>

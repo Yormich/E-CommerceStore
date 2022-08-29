@@ -59,27 +59,38 @@ namespace E_CommerceStore.Controllers
                     return View("RegisterPage", model);
                 }
                 emailVerificator.SetCodeForEmail(model.Email);
-                string? code = emailVerificator.GetCodeByEmail(model.Email);
-                if(code != null)
-                {
-                    const string senderAddress = "lanister2028@gmail.com";
-                    MailAddress from = new MailAddress(senderAddress, "Yormich");
-                    MailAddress to = new MailAddress(model.Email);
-                    MailMessage codeMessage = new MailMessage(from, to);
-                    codeMessage.Subject = "Your Verification code for E-Commerce Store";
-                    codeMessage.Body = $"Code: {code}";
-                 
-                    SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                    smtp.EnableSsl = true;
-                    smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
-                    await smtp.SendMailAsync(codeMessage);
-          
-                    return View("VerifyRegisterData", model);
-                }
+
+                await SendCode(model);
+
+                return View("VerifyRegisterData", model);
             }
 
             return View("RegisterPage", model);
         }
+
+        [HttpGet("register/SendCode")]
+        public async Task<IActionResult> SendCode(UserRegisterModel model)
+        {
+            Console.WriteLine(model.Email + model.Password + model.RepeatedPassword + model.VerificationCode + model.Role);
+            string? code = emailVerificator.GetCodeByEmail(model.Email);
+            if (code != null)
+            {
+                const string senderAddress = "lanister2028@gmail.com";
+                MailAddress from = new MailAddress(senderAddress, "Yormich");
+                MailAddress to = new MailAddress(model.Email);
+                MailMessage codeMessage = new MailMessage(from, to);
+                codeMessage.Subject = "Your Verification code for E-Commerce Store";
+                codeMessage.Body = $"Code: {code}";
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.EnableSsl = true;
+                smtp.Credentials = new NetworkCredential(from.Address, "xljwerowblyyouua");
+                await smtp.SendMailAsync(codeMessage);
+            }
+            return View("VerifyRegisterData", model);
+        }
+
+
         [HttpPost("register/verify")]
         public async Task<IActionResult> VerifyRegisterData(UserRegisterModel model)
         {
