@@ -501,3 +501,30 @@ input.valid {
     width:40%;
     margin:auto;
 }
+
+.product-page-reviews-wrapper{
+    margin-left:auto;
+    margin-right:auto;
+    width:90%;
+    border-color:rgb(45, 40, 40, 0,76);
+    border-style: inset;
+    border-width:0.1em;
+    display:flex;
+    flex-direction:column;
+    flex-wrap:nowrap;
+}
+
+.product-page-review {
+    margin-top: 1.5%;
+    border-style: inset;
+    border-width: 0.15em;
+    border-color: rgb(148, 135, 135, 0,90);
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    height:100%;
+    border-radius:0.8em;
+    display:flex;
+    flex-direction:column;
+    flex-wrap:nowrap;
+}

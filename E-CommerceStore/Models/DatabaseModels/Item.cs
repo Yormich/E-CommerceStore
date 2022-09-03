@@ -31,6 +31,8 @@ namespace E_CommerceStore.Models.DatabaseModels
 
         public List<Cart> Carts { get; set; } = new List<Cart>();
 
+        public List<Review> Reviews { get; set; } = new List<Review>();
+
         [Required(ErrorMessage = "Product Amount is required")]
         public int Amount { get; set; }
 

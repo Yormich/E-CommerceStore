@@ -1,0 +1,47 @@
+﻿@model Review
+
+<div class="add-category-form-wrapper">
+    <form asp-action="ConfirmReviewAdd" asp-controller="Review">
+        <legend>Add Review Form</legend>
+        <fieldset>
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="ItemId" type="hidden" value="@Model.ItemId"/>
+                <input asp-for="UserId" type="hidden" value="@Model.UserId"/>
+            <p>
+                <input asp-for="NumberOfDislikes" type="hidden" value="@Model.NumberOfDislikes"/>
+            </p>
+            <p>
+                <input asp-for="NumberOfLikes" type="hidden" value="@Model.NumberOfLikes"/>
+            </p>
+            <p>
+                <label asp-for="Rating" class="form-label mt-4">Rating</label>
+                <input asp-for="Rating" type="range" id="inputRange" class="form-range" min="1.0" max="10.0" 
+                    step="1" value="@Model.Rating"/>
+                <output id="outputRange" style="text-align:center;display:block;">@Model.Rating</output>
+                <span asp-validation-for="Rating"></span>
+            </p>
+            <p>
+                <label asp-for="shortComment" class="form-label mt-4">Short comment</label>
+                <input asp-for="shortComment" class="form-control" 
+                    placeholder="General impressions of the product" value="@Model.shortComment"/>
+                <span asp-validation-for="shortComment"></span>
+            </p>
+            <p>
+                <label asp-for="longComment" class="form-label mt-4">Your thoughts about product</label>
+                <textarea asp-for="longComment"  class="form-control" 
+                    placeholder="Length should be below 150 characters" value="@Model.longComment"
+                    style="min-height:10em;">
+                </textarea> 
+                <span asp-validation-for="longComment"></span>
+            </p>
+            <p>
+                <input asp-for="ReviewTime" type="hidden" value="@DateTime.Now" />
+            </p>
+        </fieldset>
+        <input  type="submit" class="btn btn-dark" value="Add Review"/>
+    </form>
+</div>
+
+@section Footer{
+
+}

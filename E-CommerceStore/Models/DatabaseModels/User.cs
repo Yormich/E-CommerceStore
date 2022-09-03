@@ -58,6 +58,8 @@ namespace E_CommerceStore.Models.DatabaseModels
 
         public List<Order> Orders { get; set; } = null!;
 
+        public List<Review> Reviews { get; set; } = null!;
+
         public User(string Email, string Password, string? Name, Role Role)
         {
             this.Email = Email;

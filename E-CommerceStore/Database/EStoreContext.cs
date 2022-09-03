@@ -45,6 +45,8 @@ namespace E_CommerceStore.Database
 
         public DbSet<ItemCart> itemCarts { get; set; } = null!;
 
+        public DbSet<Review> Reviews { get; set; } = null!;
+
         public static string MakeConnectionString(string ContentRootPath,
             string jsonFileName)
         {
@@ -78,6 +80,7 @@ namespace E_CommerceStore.Database
             builder.Entity<User>(ConfigureUser);
             builder.Entity<Order>(ConfigureOrder);
             builder.Entity<Cart>(ConfigureCart);
+            builder.Entity<Review>(ConfigureReview);
         }
          
         private void ConfigureItemBrand(EntityTypeBuilder<ItemBrand> brandBuilder)
@@ -105,7 +108,7 @@ namespace E_CommerceStore.Database
         {
             ipBuilder.ToTable("PropertyCategories");
             ipBuilder.HasKey(c => c.Id);
-            ipBuilder.HasCheckConstraint("Name", "LEN(Name) > 3");
+            ipBuilder.HasCheckConstraint("Name", "LEN(Name) > 1");
             ipBuilder.Property(c => c.Name).HasMaxLength(40);
 
             ipBuilder.HasOne(c => c.ItemType)
@@ -201,5 +204,25 @@ namespace E_CommerceStore.Database
                 .WithOne(user => user.Cart)
                 .HasForeignKey<Cart>(cart => cart.OwnerId);
         }        
+
+        private void ConfigureReview(EntityTypeBuilder<Review> reviewBuilder)
+        {
+            reviewBuilder.ToTable("Reviews");
+            reviewBuilder.HasKey(r => r.Id);
+            reviewBuilder.HasAlternateKey(r => new { r.ItemId, r.UserId });
+
+            reviewBuilder.Property(r => r.shortComment).HasMaxLength(40);
+            reviewBuilder.Property(r => r.longComment).HasMaxLength(150);
+            reviewBuilder.Property(r => r.NumberOfLikes).HasDefaultValue(0);
+            reviewBuilder.Property(r => r.NumberOfDislikes).HasDefaultValue(0);
+
+
+            reviewBuilder.HasOne(r => r.reviewCreator)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId);
+            reviewBuilder.HasOne(r => r.ItemReviewed)
+                .WithMany(i => i.Reviews)
+                .HasForeignKey(r => r.ItemId);
+        }
     }
 }

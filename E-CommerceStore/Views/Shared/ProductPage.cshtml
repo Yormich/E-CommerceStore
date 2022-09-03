@@ -1,5 +1,6 @@
 ﻿@model Item 
 @inject EStoreContext db
+@inject IUserClaimsManager claimManager
 
 @functions{
     bool IsInUsersCart(int itemId)
@@ -26,6 +27,41 @@
 
         return false;
     }
+    bool HadUserWrittenAReview(int itemId,out Review review)
+    {
+        review = new Review();
+        if(User.Identity?.IsAuthenticated ?? false)
+        {
+            if(Int32.TryParse(claimManager.TryGetClaimValue("Id"),out int userId))
+            {
+                Review? checkReview = db.Reviews.FirstOrDefault(r => r.ItemId == itemId && r.UserId == userId);
+                review = checkReview ?? new Review();
+                return checkReview != null;
+            }
+        }
+        return false;
+    }
+
+    bool HadBoughtThisProduct(int itemId,int userId)
+    {
+        //find orders linked to this product
+        var Orders = db.Orders.Where(o => o.ItemId == itemId).ToList();
+        List<int> ordersIds = new List<int>();
+        Orders.ForEach(o => ordersIds.Add(o.Id));
+        //and check if any of this orders has required userId
+
+        return db.UserOrders.Any(uo=> uo.UserId == userId && ordersIds.Contains(uo.OrderId));
+    }
+}
+
+@{
+    string? role = null, currentUserEmail = null;
+    if(User.Identity?.IsAuthenticated ?? false)
+    {
+        role = claimManager.TryGetClaimValue(ClaimTypes.Role);
+        currentUserEmail = claimManager.TryGetClaimValue(ClaimTypes.Email);   
+    }
+    string? reviewAddError = TempData["ReviewAddError"] as string;
 }
 
 <div class="product-page-wrapper">
@@ -65,6 +101,95 @@
                     Already in cart
                 </a>   
             </div>
+        }
+    </div>
+    <div class="product-page-reviews-wrapper">
+        <h4>Reviews (@Model.Reviews.Count):</h4>
+        <hr class="bg-black border-2 border-top border-dark"/>
+        @if(!String.IsNullOrEmpty(role) && role == "Buyer")
+        {
+            if(HadUserWrittenAReview(Model.Id,out Review currentUserReview))
+            {
+                <p>
+                    <h4>Your Review</h4>
+                </p>
+                <div class="btns-wrapper" style="display:flex;flex-direction:row;">
+                   <a asp-action="EditReviewForm" asp-controller="Review" 
+                        asp-route-reviewId="@currentUserReview.Id"
+                        class="btn btn-primary">
+                        Edit Review
+                        <img src="~/StaticImages/Edit.png" style="max-width:3em;max-height:3em;">
+                   </a>
+                   <a asp-action="DeleteReview" asp-controller="Review" class="btn btn-danger"
+                        style="margin-left:1%;" asp-route-reviewId="@currentUserReview.Id">
+                        Delete
+                        <img src="~/StaticImages/Trash.svg" style="width:3em;height:3em;">
+                   </a>
+                </div>
+                <div class="product-page-review">
+                     <div class="card mb-3" style="margin-top:2%;width:85%;margin-left:auto;margin-right:auto;">
+                        <h4 class="card-header">
+                            @currentUserReview.reviewCreator?.Name
+                            <span style="margin-left:80%;">@(currentUserReview.Rating)/10</span>
+                        </h4>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                @currentUserReview.shortComment 
+                            </h5>
+                        </div>
+                        @if(!String.IsNullOrEmpty(currentUserReview.longComment))
+                        {
+                            <div class="card-body">
+                                <p>
+                                    @currentUserReview.longComment
+                                </p>
+                            </div>
+                        }
+                        <div class="card-footer text-muted">
+                            @currentUserReview.ReviewTime.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+                    @if(Model.Reviews.Any(r=> r != currentUserReview))
+                    {
+                        <h3>Other people's reviews</h3>
+                    }
+            }
+            else if(HadBoughtThisProduct(Model.Id,Int32.Parse(claimManager.TryGetClaimValue("Id") ?? "-1")))
+            {
+                <a asp-action="AddNewReviewForm" asp-controller="Review" asp-route-itemId="@Model.Id"
+                    class="btn btn-success" style="max-height:100%;max-width:15%;">
+                    Write Review
+                </a>
+            }
+        }
+        @foreach(Review review in Model.Reviews)
+        {
+            if(review.reviewCreator?.Email != currentUserEmail)
+            {
+                <div class="card mb-3" style="margin-top:2%;width:85%;margin-left:auto;margin-right:auto;">
+                    <h4 class="card-header">
+                        @review.reviewCreator?.Name
+                        <span style="margin-left:80%;">@(review.Rating)/10</span>
+                    </h4>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @review.shortComment 
+                        </h5>
+                    </div>
+                    @if(!String.IsNullOrEmpty(review.longComment))
+                    {
+                        <div class="card-body">
+                            <p>
+                                @review.longComment
+                            </p>
+                        </div>
+                    }
+                    <div class="card-footer text-muted">
+                        @review.ReviewTime.ToShortDateString()
+                    </div>
+                </div>
+            }
         }
     </div>
 </div>

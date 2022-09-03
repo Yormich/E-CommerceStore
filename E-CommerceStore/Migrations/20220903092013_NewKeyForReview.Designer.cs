@@ -4,6 +4,7 @@ using E_CommerceStore.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceStore.Migrations
 {
     [DbContext(typeof(EStoreContext))]
-    partial class EStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220903092013_NewKeyForReview")]
+    partial class NewKeyForReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace E_CommerceStore.Migrations
 
                     b.ToTable("PropertyCategories", (string)null);
 
-                    b.HasCheckConstraint("Name", "LEN(Name) > 1", c => c.HasName("Name2"));
+                    b.HasCheckConstraint("Name", "LEN(Name) > 3", c => c.HasName("Name2"));
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemType", b =>
@@ -274,21 +276,8 @@ namespace E_CommerceStore.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfDislikes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int>("NumberOfLikes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.Property<double>("Rating")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("ReviewTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

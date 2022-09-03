@@ -63,6 +63,12 @@ namespace E_CommerceStore.Database
                 await context.itemCarts.AddRangeAsync(MakeItemCarts());
                 await context.SaveChangesAsync();
             }
+            if(!context.Reviews.Any())
+            {
+                Console.WriteLine("Adding Reviews");
+                await context.Reviews.AddRangeAsync(MakeReviews());
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<ItemBrand> MakeItemBrands()
@@ -200,6 +206,18 @@ namespace E_CommerceStore.Database
                 new ItemCart(1,4),
                 new ItemCart(3,3),
                 new ItemCart(1,7)
+            };
+        }
+
+        private static IEnumerable<Review> MakeReviews()
+        {
+            return new List<Review>()
+            {
+                new Review(2,4,"Perfect Smartphone",null,9.5,DateTime.Now),
+                new Review(9,4,"That's not what i expected","Holds charge poorly",4.0,DateTime.Now),
+                new Review(9,5,"Average product",null,6.0,DateTime.Now),
+                new Review(11, 14, "Super!!", "These are the best glasses I have ever worn! " +
+                    "They make me look so cool",10.0,DateTime.Now)
             };
         }
     }

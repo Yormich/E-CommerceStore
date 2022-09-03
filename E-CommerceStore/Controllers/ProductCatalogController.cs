@@ -50,12 +50,15 @@ namespace E_CommerceStore.Controllers
         }
 
         [HttpGet("ProductPage/{itemId:int:min(1)}")]
-        public ViewResult ProductPage(int itemId)
+        public async Task<ViewResult> ProductPage(int itemId)
         {
-            Item item = db.Items.Where(item => item.Id == itemId)
+            Item item = await db.Items.Where(item => item.Id == itemId)
                 .Include(item => item.ItemType)
                 .ThenInclude(type => type.itemPropertyCategories)
-                .Include(item => item.PersonalProperties).First();  
+                .Include(item => item.PersonalProperties)
+                .Include(item=>item.Reviews)
+                .ThenInclude(review=>review.reviewCreator)
+                .FirstAsync();  
             return View("ProductPage",item);
         }
     }

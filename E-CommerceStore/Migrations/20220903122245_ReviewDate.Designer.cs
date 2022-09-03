@@ -4,6 +4,7 @@ using E_CommerceStore.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_CommerceStore.Migrations
 {
     [DbContext(typeof(EStoreContext))]
-    partial class EStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220903122245_ReviewDate")]
+    partial class ReviewDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace E_CommerceStore.Migrations
 
                     b.ToTable("PropertyCategories", (string)null);
 
-                    b.HasCheckConstraint("Name", "LEN(Name) > 1", c => c.HasName("Name2"));
+                    b.HasCheckConstraint("Name", "LEN(Name) > 3", c => c.HasName("Name2"));
                 });
 
             modelBuilder.Entity("E_CommerceStore.Models.DatabaseModels.ItemType", b =>
