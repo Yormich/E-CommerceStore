@@ -129,19 +129,19 @@
                 <div class="product-page-review">
                      <div class="card mb-3" style="margin-top:2%;width:85%;margin-left:auto;margin-right:auto;">
                         <h4 class="card-header">
-                            @currentUserReview.reviewCreator?.Name
+                            @currentUserReview.ReviewCreator?.Name
                             <span style="margin-left:80%;">@(currentUserReview.Rating)/10</span>
                         </h4>
                         <div class="card-body">
                             <h5 class="card-title">
-                                @currentUserReview.shortComment 
+                                @currentUserReview.ShortComment 
                             </h5>
                         </div>
-                        @if(!String.IsNullOrEmpty(currentUserReview.longComment))
+                        @if(!String.IsNullOrEmpty(currentUserReview.LongComment))
                         {
                             <div class="card-body">
                                 <p>
-                                    @currentUserReview.longComment
+                                    @currentUserReview.LongComment
                                 </p>
                             </div>
                         }
@@ -165,26 +165,36 @@
         }
         @foreach(Review review in Model.Reviews)
         {
-            if(review.reviewCreator?.Email != currentUserEmail)
+            if(review.ReviewCreator?.Email != currentUserEmail)
             {
                 <div class="card mb-3" style="margin-top:2%;width:85%;margin-left:auto;margin-right:auto;">
                     <h4 class="card-header">
-                        @review.reviewCreator?.Name
+                        @review.ReviewCreator?.Name
                         <span style="margin-left:80%;">@(review.Rating)/10</span>
                     </h4>
                     <div class="card-body">
                         <h5 class="card-title">
-                            @review.shortComment 
+                            @review.ShortComment 
                         </h5>
                     </div>
-                    @if(!String.IsNullOrEmpty(review.longComment))
+                    @if(!String.IsNullOrEmpty(review.LongComment))
                     {
                         <div class="card-body">
                             <p>
-                                @review.longComment
+                                @review.LongComment
                             </p>
                         </div>
                     }
+                    <div>
+                        @*<a asp-action="ChangeLikesAmount" asp-controller="Review"
+                            asp-route-reviewId="@review.Id" class="btn">
+                            <img src="~/StaticImages/Like.png"> @review.NumberOfLikes
+                        </a>
+                        <a asp-action="IncreaseDislikeAmount" asp-controller="Review"
+                            asp-route-reviewId="@review.Id" class="btn">
+                            <img src="~/StaticImages/Dislike.png"> @review.NumberOfDislikes
+                        </a>*@
+                    </div>      
                     <div class="card-footer text-muted">
                         @review.ReviewTime.ToShortDateString()
                     </div>

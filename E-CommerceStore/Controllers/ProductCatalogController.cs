@@ -57,7 +57,7 @@ namespace E_CommerceStore.Controllers
                 .ThenInclude(type => type.itemPropertyCategories)
                 .Include(item => item.PersonalProperties)
                 .Include(item=>item.Reviews)
-                .ThenInclude(review=>review.reviewCreator)
+                .ThenInclude(review=>review.ReviewCreator)
                 .FirstAsync();  
             return View("ProductPage",item);
         }

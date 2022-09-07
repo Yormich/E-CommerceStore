@@ -10,25 +10,21 @@ namespace E_CommerceStore.Models.DatabaseModels
         public Item? ItemReviewed { get; set; }
         public int ItemId { get; set; }
 
-        public User? reviewCreator { get; set; }
+        public User? ReviewCreator { get; set; }
         public int UserId { get; set; }
 
         [Required]
         [StringLength(40, ErrorMessage = "Length should be below 40 characters", MinimumLength = 0)]
-        public string shortComment { get; set; } = String.Empty;
+        public string ShortComment { get; set; } = String.Empty;
 
         [StringLength(150,ErrorMessage = "Length should be between 2 and 150 characters",MinimumLength = 2)]
-        public string? longComment { get; set; }
+        public string? LongComment { get; set; }
 
         [Required]
         [Range(1.0,10.0, ErrorMessage = "Rating should be between 1 and 10",
             ConvertValueInInvariantCulture = true)]
         [DisplayFormat(ApplyFormatInEditMode = true)]
         public double Rating { get; set; }
-
-        public int NumberOfLikes { get; set; } = 0;
-
-        public int NumberOfDislikes { get; set; } = 0;
 
         public DateTime ReviewTime { get; set; }
 
@@ -37,10 +33,10 @@ namespace E_CommerceStore.Models.DatabaseModels
         {
             this.ItemId = itemId;
             this.UserId = userId;
-            this.shortComment = shortComment;
-            this.longComment = longComment;
+            this.ShortComment = shortComment;
+            this.LongComment = longComment;
             this.Rating = rating;
-            this.ReviewTime = ReviewTime;
+            this.ReviewTime = reviewTime;
         }
 
         public Review(int userId,int itemId)

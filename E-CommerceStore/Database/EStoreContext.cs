@@ -211,13 +211,13 @@ namespace E_CommerceStore.Database
             reviewBuilder.HasKey(r => r.Id);
             reviewBuilder.HasAlternateKey(r => new { r.ItemId, r.UserId });
 
-            reviewBuilder.Property(r => r.shortComment).HasMaxLength(40);
-            reviewBuilder.Property(r => r.longComment).HasMaxLength(150);
-            reviewBuilder.Property(r => r.NumberOfLikes).HasDefaultValue(0);
-            reviewBuilder.Property(r => r.NumberOfDislikes).HasDefaultValue(0);
+            reviewBuilder.Property(r => r.ShortComment).HasMaxLength(40);
+            reviewBuilder.Property(r => r.LongComment).HasMaxLength(150);
+          //  reviewBuilder.Property(r => r.NumberOfLikes).HasDefaultValue(0);
+           // reviewBuilder.Property(r => r.NumberOfDislikes).HasDefaultValue(0);
 
 
-            reviewBuilder.HasOne(r => r.reviewCreator)
+            reviewBuilder.HasOne(r => r.ReviewCreator)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId);
             reviewBuilder.HasOne(r => r.ItemReviewed)

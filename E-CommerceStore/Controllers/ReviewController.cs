@@ -63,8 +63,8 @@ namespace E_CommerceStore.Controllers
                 Review? reviewToUpdate = await db.Reviews.FirstOrDefaultAsync(r => r.Id == review.Id);
                 if (reviewToUpdate == null)
                     return NotFound();
-                reviewToUpdate.shortComment = review.shortComment;
-                reviewToUpdate.longComment = review.longComment;
+                reviewToUpdate.ShortComment = review.ShortComment;
+                reviewToUpdate.LongComment = review.LongComment;
                 reviewToUpdate.Rating = review.Rating;
                 reviewToUpdate.ReviewTime = DateTime.Now;
                 await db.SaveChangesAsync();
@@ -87,5 +87,19 @@ namespace E_CommerceStore.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction("ProductPage", "ProductCatalog", new { itemId = ItemId });
         }
+
+
+        /*немного shit-code`a не помешает)) 
+        [HttpGet("IncreaseLikes/{reviewId:int}")]
+        public async Task<IActionResult> IncreaseLikesAmount(int reviewId)
+        {
+            int itemId = -1;
+            Review? review = await db.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
+            if (review == null)
+                return NotFound();
+            review.NumberOfLikes += 1;
+            await db.SaveChangesAsync();
+            return RedirectToAction("ProductPage", "ProductCatalog", new { itemId = itemId });
+        }*/
     }
 }
